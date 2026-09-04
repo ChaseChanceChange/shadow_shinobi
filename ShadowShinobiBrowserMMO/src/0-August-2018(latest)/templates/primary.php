@@ -85,7 +85,6 @@ $template = <<<THEVERYENDOFYOU
       <a href="index.php">Home</a>
       <a href="rank.php">Rankings</a>
       <a href="help.php">Codex</a>
-      {{topnav}}
     </nav>
     <div class="ss-header__actions">
       <a href="help.php" title="Help">?</a>
@@ -98,7 +97,6 @@ $template = <<<THEVERYENDOFYOU
       <div class="ss-page-heading">
         <span class="ss-eyebrow">SHADOW SHINOBI</span>
         <h1 id="page-title">{{title}}</h1>
-        <div id="ss-context">{{dkgamename}}</div>
       </div>
       <div class="ss-content-card">
         {{content}}
