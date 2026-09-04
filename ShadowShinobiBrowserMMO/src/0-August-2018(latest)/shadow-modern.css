@@ -1,16 +1,47 @@
-/* Shadow Shinobi modernization layer. Legacy layout remains underneath. */
-:root{color-scheme:dark;--bg:#08090c;--panel:#11141a;--panel2:#171b22;--ink:#e9edf2;--muted:#9da7b3;--accent:#d7dbe2;--line:#303641;--danger:#b85c62;}
-body{background:radial-gradient(circle at 50% 0%,#1a1e25 0,#090a0d 45%,#050608 100%) !important;color:var(--ink) !important;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif !important;}
-#content,.title,.copyright,fieldset{box-sizing:border-box;}
-a{color:#d8dde5 !important;text-shadow:none !important;}
+/* Shadow Shinobi modernization layer. Legacy game logic and markup remain compatible. */
+:root{color-scheme:dark;--bg:#07090d;--panel:#10141b;--panel-2:#171c24;--panel-3:#1d2430;--ink:#edf2f7;--muted:#98a4b2;--accent:#dbe2ea;--line:#303947;--line-strong:#4e5968;--danger:#c7646d;--success:#6dbb8a;--warning:#d4ad62;}
+*{box-sizing:border-box;}
+html{min-width:320px;background:var(--bg);}
+body{margin:0 !important;background:radial-gradient(circle at 50% 0,#1b212b 0,#0b0e13 42%,#05070a 100%) !important;color:var(--ink) !important;font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif !important;font-size:14px;line-height:1.45;}
+body,body *{scrollbar-color:#3c4653 #0a0d12;}
+img{max-width:100%;}
+a{color:#dbe1e8 !important;text-shadow:none !important;}
 a:hover{color:#fff !important;}
-input,textarea,select{background:#0d1015 !important;color:#eef1f5 !important;border:1px solid var(--line) !important;border-radius:6px;box-sizing:border-box;}
-input:focus,textarea:focus,select:focus{outline:2px solid #68717d;outline-offset:1px;}
-.buttons a,.buttons button{background:#151922 !important;color:#e7ebef !important;border:1px solid var(--line) !important;border-radius:6px;transition:.15s ease;}
-.buttons a:hover,.buttons button:hover{background:#222832 !important;color:#fff !important;border-color:#68717d !important;}
+a:focus,input:focus,textarea:focus,select:focus,button:focus{outline:2px solid #697586;outline-offset:2px;}
+input,textarea,select{background:#0c1016 !important;color:#eef2f6 !important;border:1px solid var(--line) !important;border-radius:6px;box-sizing:border-box;}
+input,select{min-height:36px;padding:7px 10px;}
+textarea{padding:9px 10px;}
+button{font:inherit;}
+.buttons a,.buttons button{background:linear-gradient(180deg,#1a202a,#11161e) !important;color:#e7edf3 !important;border:1px solid var(--line-strong) !important;border-radius:6px;transition:background .15s ease,border-color .15s ease,transform .15s ease;}
+.buttons a:hover,.buttons button:hover{background:linear-gradient(180deg,#242c38,#171d26) !important;color:#fff !important;border-color:#788495 !important;transform:translateY(-1px);}
 
-/* Modern player-facing login shell. Backend form names/actions remain unchanged. */
-.ss-login{width:min(100%,560px);margin:24px auto 44px;padding:0 18px;box-sizing:border-box;}
+/* Legacy page canvas: pull the old fixed-width layout into a responsive shell. */
+body>table{width:min(100%,1180px) !important;margin:0 auto !important;}
+body>table table{max-width:100%;}
+body>table td{vertical-align:top;}
+body table{border-color:transparent;}
+body td.left,body td.right{width:204px !important;padding:12px 8px !important;border:0 !important;}
+body td.top{padding:8px 12px !important;border:0 !important;}
+body td:not(.left):not(.right):not(.top){border-color:transparent;}
+body .title{background:linear-gradient(180deg,var(--panel-2),var(--panel)) !important;color:var(--ink) !important;border:1px solid var(--line) !important;border-radius:8px;padding:10px 12px;margin:6px 0;font-weight:700;}
+body .copyright{background:transparent !important;color:var(--muted) !important;border:0 !important;}
+body fieldset{background:linear-gradient(180deg,rgba(23,28,36,.98),rgba(11,15,21,.98)) !important;background-image:none !important;border:1px solid var(--line) !important;border-radius:10px;padding:18px !important;}
+body legend{position:static !important;display:inline-block !important;margin:0 0 12px !important;padding:4px 9px !important;background:var(--panel-3) !important;border:1px solid var(--line) !important;border-radius:5px;color:var(--ink) !important;font-size:.76rem !important;letter-spacing:.12em !important;}
+
+/* Modern content cards while keeping the legacy table-driven game rendering. */
+body #content,body .content{max-width:100%;}
+body .panel,body .card,.ss-card{background:linear-gradient(180deg,rgba(23,28,36,.96),rgba(12,16,22,.98));border:1px solid var(--line);border-radius:10px;box-shadow:0 12px 32px rgba(0,0,0,.22);}
+body .small{font-size:.78rem;color:var(--muted);}
+body .light{color:var(--muted);}
+body .highlight{color:#ff8b93;}
+
+/* Legacy button/image UI gets consistent spacing without removing gameplay controls. */
+body img{vertical-align:middle;}
+body a>img{transition:filter .15s ease,transform .15s ease;}
+body a:hover>img{filter:brightness(1.12);}
+
+/* Login / account entry shell. */
+.ss-login{width:min(100%,560px);margin:24px auto 44px;padding:0 18px;}
 .ss-login__brand{text-align:center;margin:8px 0 22px;}
 .ss-login__brand img{display:block;max-width:100%;height:auto;margin:0 auto;}
 .ss-login__brand span{display:block;margin-top:10px;color:var(--muted);font-size:.76rem;letter-spacing:.22em;text-transform:uppercase;}
@@ -27,7 +58,7 @@ input:focus,textarea:focus,select:focus{outline:2px solid #68717d;outline-offset
 .ss-field a img{width:28px;height:28px;display:block;opacity:.8;}
 .ss-field a:hover img{opacity:1;}
 .ss-check{display:flex !important;align-items:center;gap:9px;margin:2px 0 0 !important;color:var(--muted) !important;font-weight:500 !important;}
-.ss-check input{width:16px;height:16px;margin:0;accent-color:#d7dbe2;}
+.ss-check input{width:16px;height:16px;min-height:0;margin:0;accent-color:#d7dbe2;}
 .ss-login__actions{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:20px;}
 .ss-login__actions button{min-width:110px;padding:9px 14px;}
 .ss-login__actions img{width:16px;height:16px;vertical-align:-3px;}
@@ -35,9 +66,30 @@ input:focus,textarea:focus,select:focus{outline:2px solid #68717d;outline-offset
 .ss-login__links{margin-top:20px;text-align:center;color:var(--muted);line-height:1.7;font-size:.88rem;}
 .ss-login__links p{margin:.5rem 0;}
 
+/* Combat presentation. Data/commands remain server-rendered by the original engine. */
+.ss-combat{display:grid;gap:14px;}
+.ss-combat__header{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:linear-gradient(180deg,#1a2029,#11161d);border:1px solid var(--line);border-radius:9px;}
+.ss-combat__title{margin:0;color:var(--ink);font-size:1rem;font-weight:750;}
+.ss-combat__sub{color:var(--muted);font-size:.8rem;}
+.ss-combat__arena{display:grid;grid-template-columns:minmax(0,1fr) 190px;gap:14px;align-items:start;}
+.ss-combat__panel{padding:14px;background:linear-gradient(180deg,#171d26,#0e1319);border:1px solid var(--line);border-radius:10px;}
+.ss-combat__fighter{display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:start;}
+.ss-combat__graphic{display:grid;place-items:center;min-height:190px;padding:10px;background:radial-gradient(circle,#252d38 0,#10151c 68%,#0b0e13 100%);border:1px solid var(--line);border-radius:10px;}
+.ss-combat__graphic img{max-height:180px;width:auto;}
+
+@media (max-width:900px){
+  body>table{width:100% !important;}
+  body td.left,body td.right{display:block;width:100% !important;padding:6px 10px !important;}
+  body td.top{display:block;width:100% !important;}
+  body td.left,body td.right{border:0 !important;}
+  body .ss-combat__arena{grid-template-columns:1fr;}
+}
 @media (max-width:600px){
+  body{font-size:13px;}
   .ss-login{padding:0 12px;margin-top:14px;}
   .ss-panel{padding:18px;}
   .ss-login__actions{display:grid;grid-template-columns:1fr 1fr;}
   .ss-login__actions button{width:100%;min-width:0;}
+  .ss-combat__fighter{grid-template-columns:1fr;}
+  body td{padding:4px !important;}
 }
