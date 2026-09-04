@@ -45,7 +45,12 @@ body a:hover>img{filter:brightness(1.12);}
 .ss-action-card__actions button{padding:9px 15px;}
 .ss-form-field{margin-bottom:14px;}
 .ss-form-field label{display:block;margin-bottom:7px;color:var(--ink);font-size:.88rem;font-weight:650;}
-.ss-form-field input{width:100%;}
+.ss-form-field input,.ss-form-field select{width:100%;}
+.ss-form-field small{display:block;margin-top:6px;color:var(--muted);font-size:.76rem;line-height:1.5;}
+.ss-form-section{padding:16px 0;border-top:1px solid rgba(255,255,255,.07);}
+.ss-form-section:first-child{padding-top:0;border-top:0;}
+.ss-form-section h3{margin:0 0 14px;color:var(--ink);font-size:.95rem;letter-spacing:.04em;}
+.ss-form-note{margin:10px 0 0;color:var(--muted);font-size:.8rem;line-height:1.5;}
 .ss-account-form{width:min(100%,620px);margin:8px auto;padding:22px;}
 .ss-account-form__fields{max-width:520px;}
 .ss-bank__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;}
