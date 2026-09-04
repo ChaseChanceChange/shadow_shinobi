@@ -1,0 +1,28 @@
+services:
+  web:
+    image: php:8.2-apache
+    ports:
+      - "8080:80"
+    environment:
+      DB_HOST: db
+      DB_USER: shadow
+      DB_PASSWORD: shadow_dev_password
+      DB_NAME: shadow_shinobi
+      DB_PREFIX: dk
+      GAME_SECRET: local-development-secret-change-me
+    volumes:
+      - ./src/0-August-2018(latest):/var/www/html
+    depends_on:
+      - db
+  db:
+    image: mariadb:11
+    environment:
+      MARIADB_DATABASE: shadow_shinobi
+      MARIADB_USER: shadow
+      MARIADB_PASSWORD: shadow_dev_password
+      MARIADB_ROOT_PASSWORD: root_dev_password
+    volumes:
+      - shadow-db:/var/lib/mysql
+      - ./database (sql)/shadow_shinobi.sql:/docker-entrypoint-initdb.d/01-shadow.sql:ro
+volumes:
+  shadow-db:

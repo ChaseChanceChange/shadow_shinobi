@@ -1,0 +1,9 @@
+/* Shadow Shinobi modernization layer. Legacy layout remains underneath. */
+:root{color-scheme:dark;--bg:#08090c;--panel:#11141a;--panel2:#171b22;--ink:#e9edf2;--muted:#9da7b3;--accent:#d7dbe2;--line:#303641;--danger:#b85c62;}
+body{background:radial-gradient(circle at 50% 0%,#1a1e25 0,#090a0d 45%,#050608 100%) !important;color:var(--ink) !important;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif !important;}
+#content, .title, .copyright, fieldset{box-sizing:border-box;}
+a{color:#d8dde5 !important;text-shadow:none !important;}
+a:hover{color:#fff !important;}
+input,textarea,select{background:#0d1015 !important;color:#eef1f5 !important;border:1px solid var(--line) !important;border-radius:4px;}
+.buttons a,.buttons button{background:#151922 !important;color:#e7ebef !important;border:1px solid var(--line) !important;border-radius:4px;transition:.15s ease;}
+.buttons a:hover,.buttons button:hover{background:#222832 !important;color:#fff !important;border-color:#68717d !important;}
