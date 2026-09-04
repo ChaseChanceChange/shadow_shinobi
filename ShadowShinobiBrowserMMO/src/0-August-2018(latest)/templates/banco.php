@@ -10,12 +10,12 @@ $template = <<<THEVERYENDOFYOU
     <div class="ss-bank__operation">
       <label for="bank-deposit">Deposit Ryou</label>
       <input id="bank-deposit" type="number" name="deposito" min="0" step="1" inputmode="numeric" />
-      <button type="submit" name="submit" value="deposit" class="ss-bank__button">Deposit</button>
+      <button type="submit" name="submit" value="OK" class="ss-bank__button">Deposit</button>
     </div>
     <div class="ss-bank__operation">
       <label for="bank-withdraw">Withdraw Ryou</label>
       <input id="bank-withdraw" type="number" name="retirar" min="0" step="1" inputmode="numeric" />
-      <button type="submit" name="submit" value="withdraw" class="ss-bank__button">Withdraw</button>
+      <button type="submit" name="submit" value="OK" class="ss-bank__button">Withdraw</button>
     </div>
   </form>
 </section>
