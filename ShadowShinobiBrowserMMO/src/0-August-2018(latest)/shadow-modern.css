@@ -18,7 +18,7 @@ body>table{width:min(100%,1180px) !important;margin:0 auto !important;}
 body>table table{max-width:100%;}
 body>table td{vertical-align:top;}
 body table{border-color:transparent;}
-body td.left,body td.right{width:204px !important;padding:12px 8px !important;border:0 !important;}
+body td.left,body td.right{width:204px !important;padding:10px 8px !important;border:0 !important;}
 body td.top{padding:8px 12px !important;border:0 !important;}
 body td:not(.left):not(.right):not(.top){border-color:transparent;}
 body .title{background:linear-gradient(180deg,var(--panel-2),var(--panel)) !important;color:var(--ink) !important;border:1px solid var(--line) !important;border-radius:8px;padding:10px 12px;margin:6px 0;font-weight:700;}
@@ -58,6 +58,51 @@ body a:hover>img{filter:brightness(1.12);}
 .ss-bank__operation input{width:100%;margin-bottom:10px;}
 .ss-bank__button{width:100%;padding:9px 12px;background:#151b23;color:var(--ink);border:1px solid var(--line-strong);border-radius:6px;font-weight:650;cursor:pointer;}
 .ss-bank__button:hover{background:#212934;}
+
+/* Player shell */
+.ss-sidebar{display:grid;gap:12px;width:100%;max-width:204px;margin:0 auto;}
+.ss-side-card{padding:13px;background:linear-gradient(180deg,rgba(23,28,36,.97),rgba(11,15,21,.98));border:1px solid var(--line);border-radius:10px;box-shadow:0 10px 26px rgba(0,0,0,.2);overflow:hidden;}
+.ss-side-card__header{margin-bottom:11px;padding-bottom:9px;border-bottom:1px solid rgba(255,255,255,.07);}
+.ss-side-card__header h2{margin:3px 0 0;font-size:1rem;line-height:1.2;color:var(--ink);overflow-wrap:anywhere;}
+.ss-player-card__avatar{display:grid;place-items:center;gap:7px;min-height:72px;margin-bottom:8px;}
+.ss-player-card__avatar>a:first-child img{width:72px;height:72px;object-fit:cover;border-radius:9px;border:1px solid var(--line-strong);background:#0a0d12;}
+.ss-player-card__avatar .ss-side-focus img{width:42px;height:42px;border-radius:50%;border:1px solid var(--line-strong);}
+.ss-levelbar{position:relative;width:160px;height:36px;margin:7px auto 9px;overflow:hidden;border-radius:5px;background:#0a0d12;border:1px solid var(--line);}
+.ss-levelbar__fill{position:absolute;left:0;top:0;height:36px;overflow:hidden;z-index:1;}
+.ss-levelbar__frame{position:absolute;inset:0;width:160px;height:36px;z-index:2;}
+.ss-levelbar__level{position:absolute;left:8px;top:7px;z-index:3;color:#11161d;font-weight:800;text-shadow:0 1px rgba(255,255,255,.25);}
+.ss-statbars{overflow:auto;}
+.ss-statbars table{margin:0 auto !important;}
+.ss-side-nav{display:grid;gap:5px;margin-top:11px;}
+.ss-side-nav a,.ss-side-link{display:block;padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.025);font-size:.78rem;text-decoration:none;}
+.ss-side-nav a:hover,.ss-side-link:hover{background:rgba(255,255,255,.06);}
+.ss-equipment-grid{position:relative;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:42px 42px;gap:6px;margin-bottom:9px;padding:8px;background:radial-gradient(circle,#202936,#0d1118 78%);border:1px solid var(--line);border-radius:8px;}
+.ss-equipment-slot{display:grid;place-items:center;min-width:0;}
+.ss-equipment-slot img{max-width:34px;max-height:34px;}
+.ss-equipment-slot--shield{grid-column:2;grid-row:1;}
+.ss-equipment-slot--weapon{grid-column:1;grid-row:2;}
+.ss-equipment-slot--secondary{grid-column:3;grid-row:2;}
+.ss-equipment-slot--armor{grid-column:2;grid-row:2;}
+.ss-slot-row{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;margin-bottom:10px;padding:6px;border:1px solid var(--line);border-radius:7px;background:#0b0f15;}
+.ss-slot-row a{display:grid;place-items:center;min-height:36px;background:#151b23;border-radius:5px;}
+.ss-slot-row img{width:30px;height:30px;object-fit:contain;}
+.ss-item-list{display:grid;gap:5px;}
+.ss-item-list>div{display:grid;grid-template-columns:22px 1fr;column-gap:7px;align-items:center;padding:6px 7px;border:1px solid rgba(255,255,255,.05);border-radius:6px;background:rgba(255,255,255,.018);}
+.ss-item-list img{width:18px;height:18px;grid-row:span 2;}
+.ss-item-list span{font-size:.66rem;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;}
+.ss-item-list b{font-size:.75rem;font-weight:650;overflow-wrap:anywhere;}
+.ss-item-list small{grid-column:2;color:#768292;font-size:.62rem;}
+.ss-backpack__image{display:block;text-align:center;margin-bottom:8px;}
+.ss-backpack__image img{width:84px;height:44px;object-fit:cover;border-radius:7px;border:1px solid var(--line);}
+.ss-backpack__slots{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;padding:6px;background:#0b0f15;border:1px solid var(--line);border-radius:7px;}
+.ss-backpack__slots>a{display:grid;place-items:center;min-height:40px;border-radius:5px;background:#151b23;}
+.ss-backpack__slots img{width:34px;height:34px;object-fit:contain;}
+.ss-technique-icon{text-align:center;margin:0 0 8px;}
+.ss-technique-icon img{width:80px;max-height:54px;object-fit:contain;}
+.ss-technique-list{display:grid;gap:4px;font-size:.78rem;line-height:1.35;}
+.ss-technique-list a{display:block;padding:5px 6px;border-radius:5px;}
+.ss-technique-list a:hover{background:rgba(255,255,255,.05);}
+
 .ss-login{width:min(100%,560px);margin:24px auto 44px;padding:0 18px;}
 .ss-login__brand{text-align:center;margin:8px 0 22px;}
 .ss-login__brand img{display:block;max-width:100%;height:auto;margin:0 auto;}
@@ -95,6 +140,7 @@ body a:hover>img{filter:brightness(1.12);}
   body td.left,body td.right{display:block;width:100% !important;padding:6px 10px !important;}
   body td.top{display:block;width:100% !important;}
   body td.left,body td.right{border:0 !important;}
+  body .ss-sidebar{max-width:760px;grid-template-columns:repeat(2,minmax(0,1fr));}
   body .ss-combat__arena{grid-template-columns:1fr;}
 }
 @media (max-width:600px){
@@ -106,5 +152,6 @@ body a:hover>img{filter:brightness(1.12);}
   .ss-combat__fighter{grid-template-columns:1fr;}
   .ss-bank__grid{grid-template-columns:1fr;}
   .ss-action-card,.ss-account-form{padding:16px;}
+  .ss-sidebar{grid-template-columns:1fr !important;max-width:420px !important;}
   body td{padding:4px !important;}
 }
