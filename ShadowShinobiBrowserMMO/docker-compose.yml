@@ -1,6 +1,9 @@
 services:
   web:
-    image: php:8.2-apache
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: shadow-shinobi-php:8.2-apache
     ports:
       - "8080:80"
     environment:
