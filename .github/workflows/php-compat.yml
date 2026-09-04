@@ -14,10 +14,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Lint PHP sources
+      - name: Lint active game sources
         shell: sh
         run: |
-          find 'ShadowShinobiBrowserMMO/src' -type f -name '*.php' -print0 \
+          find 'ShadowShinobiBrowserMMO/src/0-August-2018(latest)' -type f -name '*.php' -print0 \
             | xargs -0 -n1 php -l
 
   docker-build:
