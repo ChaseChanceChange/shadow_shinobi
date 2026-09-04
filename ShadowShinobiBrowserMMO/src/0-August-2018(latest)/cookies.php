@@ -3,30 +3,62 @@
 function checkcookies() {
 
     include('config.php');
-    
+
     $row = false;
-    
-    if (isset($_COOKIE["dkgame"])) {
-        
-        // COOKIE FORMAT:
-        // {ID} {USERNAME} {PASSWORDHASH} {REMEMBERME}
-        $theuser = explode(" ",$_COOKIE["dkgame"]);
-        $query = doquery("SELECT * FROM {{table}} WHERE username='$theuser[1]'", "users");
-        if (mysqli_num_rows($query) != 1) { die("Cookie inválido (Erro 1). Por favor apague os cookies do seu navegador e logue novamente."); }
-        $row = mysqli_fetch_array($query);
-        if ($row["id"] != $theuser[0]) { die("Cookie inválido (Erro 2). Por favor apague os cookies do seu navegador e logue novamente."); }
-        if (md5($row["password"] . "--" . $dbsettings["secretword"]) !== $theuser[2]) { die("Cookie inválido (Erro 3). Por favor apague os cookies do seu navegador e logue novamente."); }
-        
-        // If we've gotten this far, cookie should be valid, so write a new one.
-        $newcookie = implode(" ",$theuser);
-        if ($theuser[3] == 1) { $expiretime = time()+31536000; } else { $expiretime = 0; }
-        setcookie ("dkgame", $newcookie, $expiretime, "/", "", 0);
-        $onlinequery = doquery("UPDATE {{table}} SET onlinetime=NOW() WHERE id='$theuser[0]' LIMIT 1", "users");
-        
+
+    if (!isset($_COOKIE['dkgame'])) {
+        return $row;
     }
-        
+
+    // COOKIE FORMAT:
+    // {ID} {USERNAME} {PASSWORDHASH} {REMEMBERME}
+    // Keep the legacy format for compatibility with existing accounts/sessions.
+    $cookieParts = preg_split('/\s+/', trim((string) $_COOKIE['dkgame']));
+    if (count($cookieParts) < 4) {
+        return false;
+    }
+
+    $userId = filter_var($cookieParts[0], FILTER_VALIDATE_INT);
+    $username = (string) $cookieParts[1];
+    $cookieHash = (string) $cookieParts[2];
+    $rememberMe = (int) $cookieParts[3];
+
+    if ($userId === false || $userId < 1 || $username === '' || $cookieHash === '') {
+        return false;
+    }
+
+    // The legacy database abstraction quotes/escapes input globally, so preserve
+    // that compatibility contract here rather than changing query semantics yet.
+    $query = doquery("SELECT * FROM {{table}} WHERE id='$userId' AND username='$username' LIMIT 1", "users");
+    if (mysqli_num_rows($query) !== 1) {
+        return false;
+    }
+
+    $row = mysqli_fetch_array($query);
+    if (!$row) {
+        return false;
+    }
+
+    $expectedHash = md5($row['password'] . '--' . $dbsettings['secretword']);
+    if (!hash_equals($expectedHash, $cookieHash)) {
+        return false;
+    }
+
+    // Refresh the existing legacy cookie format, but set modern cookie attributes.
+    $newcookie = $userId . ' ' . $username . ' ' . $cookieHash . ' ' . $rememberMe;
+    $expiretime = $rememberMe === 1 ? time() + 31536000 : 0;
+
+    setcookie('dkgame', $newcookie, [
+        'expires'  => $expiretime,
+        'path'     => '/',
+        'secure'   => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    doquery("UPDATE {{table}} SET onlinetime=NOW() WHERE id='$userId' LIMIT 1", "users");
+
     return $row;
-    
 }
 
 ?>
