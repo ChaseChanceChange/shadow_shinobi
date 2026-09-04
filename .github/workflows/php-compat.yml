@@ -26,5 +26,32 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Build web image
-        run: docker build -t shadow-shinobi-php:ci 'ShadowShinobiBrowserMMO'
+      - name: Validate Compose configuration
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' config
+
+      - name: Build and start full stack
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' up -d --build
+
+      - name: Verify web runtime
+        run: |
+          for i in {1..30}; do
+            if curl --fail --silent --show-error http://127.0.0.1:8080/ > /tmp/shadow-home.html; then
+              break
+            fi
+            sleep 2
+          done
+          test -s /tmp/shadow-home.html
+
+      - name: Verify database service
+        run: |
+          docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' exec -T db mariadb \
+            -u shadow -pshadow_dev_password shadow_shinobi \
+            -e "SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema='shadow_shinobi';"
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' logs --no-color
+
+      - name: Shut down stack
+        if: always()
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' down -v
