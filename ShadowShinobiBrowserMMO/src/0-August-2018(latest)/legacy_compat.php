@@ -6,6 +6,7 @@
 // prevents PHP 8 undefined-key warnings from leaking into the rendered game.
 $legacyGetDefaults = [
     'do',
+    'do2',
     'conteudo',
     'latitude',
     'longitude',
@@ -21,6 +22,7 @@ $legacyGetDefaults = [
     'ord',
     'nomechar',
     'page',
+    'qual',
 ];
 
 foreach ($legacyGetDefaults as $legacyGetKey) {
@@ -48,10 +50,31 @@ ini_set('display_errors', '0');
 ini_set('display_startup_errors', '0');
 ini_set('log_errors', '1');
 
+// Common legacy template / include variables that are often written only on some branches.
 if (!isset($indexconteudo)) {
     $indexconteudo = '';
 }
 
 if (!isset($htmlnapag)) {
     $htmlnapag = '';
+}
+
+if (!isset($fim)) {
+    $fim = '';
+}
+
+if (!isset($fimh)) {
+    $fimh = '';
+}
+
+if (!isset($conteudo)) {
+    $conteudo = '';
+}
+
+if (!isset($opcoesnovas)) {
+    $opcoesnovas = '';
+}
+
+if (!isset($drop)) {
+    $drop = '';
 }
