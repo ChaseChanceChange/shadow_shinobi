@@ -29,7 +29,9 @@ services:
       MARIADB_PASSWORD: shadow_dev_password
       MARIADB_ROOT_PASSWORD: root_dev_password
     healthcheck:
-      test: ["CMD-SHELL", "mariadb-admin ping -h localhost -u shadow -pshadow_dev_password --silent"]
+      # Use TCP/3306 so the check cannot succeed against MariaDB's
+      # temporary init server, which listens on the Unix socket only.
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -P 3306 -u shadow -pshadow_dev_password --silent"]
       interval: 5s
       timeout: 5s
       retries: 20
