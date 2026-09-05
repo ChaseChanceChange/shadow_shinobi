@@ -56,9 +56,9 @@ jobs:
               return 1
             fi
           }
-          check_page http://127.0.0.1:8080/login.php?do=login /tmp/login.html
-          check_page http://127.0.0.1:8080/help.php /tmp/help.html
-          check_page http://127.0.0.1:8080/rank.php /tmp/rank.html
+          check_page 'http://127.0.0.1:8080/login.php?do=login' /tmp/login.html
+          check_page 'http://127.0.0.1:8080/help.php' /tmp/help.html
+          check_page 'http://127.0.0.1:8080/rank.php' /tmp/rank.html
 
       - name: Verify developer diagnostics and login
         run: |
@@ -66,7 +66,7 @@ jobs:
           curl --fail --silent --show-error http://127.0.0.1:8080/dev_health.php > /tmp/dev-health.html
           grep -q 'Core checks passing' /tmp/dev-health.html
           curl --fail --silent --show-error -L -c /tmp/shadow.cookies -b /tmp/shadow.cookies \
-            http://127.0.0.1:8080/login.php?do=dev > /tmp/dev-login.html
+            'http://127.0.0.1:8080/login.php?do=dev' > /tmp/dev-login.html
           test -s /tmp/dev-login.html
           if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' /tmp/dev-login.html; then
             echo 'Runtime error text found after developer login'
@@ -77,14 +77,16 @@ jobs:
       - name: Verify authenticated shell pages
         run: |
           set -euo pipefail
-          for url in \
-            'http://127.0.0.1:8080/index.php' \
-            'http://127.0.0.1:8080/backpack.php' \
-            'http://127.0.0.1:8080/showchar.php'; do
-            output="/tmp/$(echo "$url" | sed 's#[^A-Za-z0-9]#_#g').html"
-            curl --fail --silent --show-error -b /tmp/shadow.cookies "$url" > "$output"
+          declare -A pages=(
+            [home]='http://127.0.0.1:8080/index.php'
+            [backpack]='http://127.0.0.1:8080/backpack.php'
+            [character]='http://127.0.0.1:8080/index.php?do=showchar'
+          )
+          for name in "${!pages[@]}"; do
+            output="/tmp/${name}.html"
+            curl --fail --silent --show-error -b /tmp/shadow.cookies "${pages[$name]}" > "$output"
             if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' "$output"; then
-              echo "Runtime error text found in $url"
+              echo "Runtime error text found in ${pages[$name]}"
               exit 1
             fi
           done
