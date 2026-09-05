@@ -329,6 +329,10 @@ return $win;
 
 if (!function_exists('conteudoexplic')){
 function conteudoexplic($iditem, $tipo, $objeto, $durabilidade){
+	$conteudo = "";
+	$fim = "";
+	$objnome = "";
+	$retornar = "";
 	
 	if (!is_numeric($iditem)){
 			if ($iditem == "hp"){$conteudo = "HP:<font color=darkblue> + ".$tipo."</font><br>Quantidade: ".$durabilidade; $objnome = "Poção de Vida";}
