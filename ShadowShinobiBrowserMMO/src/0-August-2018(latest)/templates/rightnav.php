@@ -18,25 +18,29 @@ for ($i = 1; $i < 5; $i ++) {
 }
 
 $jutsudebuscahtml = "";
-if ($userrow['jutsudebuscahtml'] == 1) {
+if (($userrow['jutsudebuscahtml'] ?? 0) == 1) {
     $jutsudebuscahtml = "<a href=\"mainmsg.php?do2=usarjutsubusca\" class=\"ss-side-link\" title=\"Jutsu Ocular\">Search Technique</a>";
 }
 
-$durabm = explode(",",$userrow["durabilidade"]);
+$durabm = explode(",", (string)($userrow["durabilidade"] ?? ""));
 for ($i = 1; $i < 7; $i ++) {
-    if (isset($durabm[$i]) && $durabm[$i] == "X") {$durabm[$i] = "*";}
+    if (!isset($durabm[$i])) { $durabm[$i] = "0"; }
+    if ($durabm[$i] == "X") {$durabm[$i] = "*";}
 }
 
-if ($userrow["magiclist"] == "None") {$userrow["magiclist"] = "Nenhum Jutsu.";}
+if (($userrow["magiclist"] ?? "") == "" || ($userrow["magiclist"] ?? "") == "None") {
+    $userrow["magiclist"] = "Nenhum Jutsu.";
+}
 
 $olhosenjutsu = "";
-if ($userrow["senjutsuhtml"] == "fechado") {
-    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=usar\"><img src=\"images/olhos/".$userrow["senjutsuhtml"].".jpg\" alt=\"Activate Senjutsu\" title=\"Ativar Senjutsu (1NP/3s)\"></a>";
-} elseif ($userrow["senjutsuhtml"] == "senjutsu") {
+$senjutsuhtml = $userrow["senjutsuhtml"] ?? "";
+if ($senjutsuhtml == "fechado") {
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=usar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Activate Senjutsu\" title=\"Ativar Senjutsu (1NP/3s)\"></a>";
+} elseif ($senjutsuhtml == "senjutsu") {
     include('funcoesinclusas.php');
     senjutsu();
-    if ($userrow["currentnp"] == 0) {$titulo = "Ativar Senjutsu (1NP/3s)";} else {$titulo = "Desativar Senjutsu";}
-    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=cancelar\"><img src=\"images/olhos/".$userrow["senjutsuhtml"].".jpg\" alt=\"Senjutsu\" title=\"$titulo\"></a>";
+    if (($userrow["currentnp"] ?? 0) == 0) {$titulo = "Ativar Senjutsu (1NP/3s)";} else {$titulo = "Desativar Senjutsu";}
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=cancelar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Senjutsu\" title=\"$titulo\"></a>";
 }
 
 $armaatr = conteudoexplic($userrow["weaponid"], '1', 'armaatr', $durabm[1] ?? '*');
@@ -48,12 +52,15 @@ $slot3atr = conteudoexplic($userrow["slot3id"], '4', 'slot3atr', $durabm[6] ?? '
 
 $lvlquery = doquery("SELECT ".$userrow['charclass']."_exp FROM {{table}} WHERE id='".$userrow['level']."'", "levels");
 $lvlquery2 = doquery("SELECT ".$userrow['charclass']."_exp FROM {{table}} WHERE id='".($userrow['level'] + 1)."'", "levels");
-$lvlrow = mysqli_fetch_array($lvlquery);
-$lvlrow2 = mysqli_fetch_array($lvlquery2);
-$xpproxlvl = $lvlrow2[$userrow['charclass']."_exp"] - $lvlrow[$userrow['charclass']."_exp"];
-$porcconcluida = $xpproxlvl > 0 ? floor((($userrow['experience'] - $lvlrow[$userrow['charclass']."_exp"]) * 100) / $xpproxlvl) : 0;
+$lvlrow = mysqli_fetch_array($lvlquery) ?: array();
+$lvlrow2 = mysqli_fetch_array($lvlquery2) ?: array();
+$classExpKey = $userrow['charclass']."_exp";
+$xpCurrent = (int)($lvlrow[$classExpKey] ?? 0);
+$xpNext = (int)($lvlrow2[$classExpKey] ?? 0);
+$xpproxlvl = $xpNext - $xpCurrent;
+$porcconcluida = $xpproxlvl > 0 ? floor((($userrow['experience'] - $xpCurrent) * 100) / $xpproxlvl) : 0;
 $porcconcluida = max(0, min(100, $porcconcluida));
-$quantofaltaxp = max(0, $xpproxlvl - ($userrow['experience'] - $lvlrow[$userrow['charclass']."_exp"]));
+$quantofaltaxp = max(0, $xpproxlvl - ($userrow['experience'] - $xpCurrent));
 $widthbar = round((155 * $porcconcluida)/100);
 $barrahtml = "<div class=\"ss-levelbar\" onmouseover=\"explicdrop('qualquer', 'Dados do Level', 'XP Atual: ".$userrow['experience']."<br>XP P/ Lvl Up: ".$quantofaltaxp."<br>Porc. Conclu&iacute;da: ".$porcconcluida."%','1','1');\" onmouseout=\"fecharexplic();\"><div class=\"ss-levelbar__fill\" style=\"width:{$widthbar}px\"><img src=\"images/levelbarin.jpg\" width=\"$widthbar\" height=\"36\" alt=\"\"></div><img class=\"ss-levelbar__frame\" src=\"images/levelbar.png\" id=\"qualquer\" alt=\"Level {$userrow['level']}\"><span class=\"ss-levelbar__level\">".$userrow['level']."</span></div>";
 
@@ -93,7 +100,6 @@ $template = <<<THEVERYENDOFYOU
     <div class="ss-item-list">
       <div><img src="images/icon_weapon.gif" alt="Weapon"><span>Weapon</span><b>{{weaponname}}</b><small>Durability: $durabm[1]</small></div>
       <div><img src="images/icon_armor.gif" alt="Armor"><span>Armor</span><b>{{armorname}}</b><small>Durability: $durabm[2]</small></div>
-      <div><img src="images/icon_shield.gif" alt="Shield"><span>Shield</span><b>{{shieldname}}</b><small>Durability: $durabm[3]</small></div>
       <div><img src="images/orb.gif" alt="Slot 1"><span>Slot 1</span><b>{{slot1name}}</b><small>Durability: $durabm[4]</small></div>
       <div><img src="images/orb.gif" alt="Slot 2"><span>Slot 2</span><b>{{slot2name}}</b><small>Durability: $durabm[5]</small></div>
       <div><img src="images/orb.gif" alt="Slot 3"><span>Slot 3</span><b>{{slot3name}}</b><small>Durability: $durabm[6]</small></div>
