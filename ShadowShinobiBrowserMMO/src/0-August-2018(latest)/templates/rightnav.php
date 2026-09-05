@@ -100,6 +100,7 @@ $template = <<<THEVERYENDOFYOU
     <div class="ss-item-list">
       <div><img src="images/icon_weapon.gif" alt="Weapon"><span>Weapon</span><b>{{weaponname}}</b><small>Durability: $durabm[1]</small></div>
       <div><img src="images/icon_armor.gif" alt="Armor"><span>Armor</span><b>{{armorname}}</b><small>Durability: $durabm[2]</small></div>
+      <div><img src="images/icon_shield.gif" alt="Shield"><span>Shield</span><b>{{shieldname}}</b><small>Durability: $durabm[3]</small></div>
       <div><img src="images/orb.gif" alt="Slot 1"><span>Slot 1</span><b>{{slot1name}}</b><small>Durability: $durabm[4]</small></div>
       <div><img src="images/orb.gif" alt="Slot 2"><span>Slot 2</span><b>{{slot2name}}</b><small>Durability: $durabm[5]</small></div>
       <div><img src="images/orb.gif" alt="Slot 3"><span>Slot 3</span><b>{{slot3name}}</b><small>Durability: $durabm[6]</small></div>
