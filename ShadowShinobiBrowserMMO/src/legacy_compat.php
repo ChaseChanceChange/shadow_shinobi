@@ -2,6 +2,12 @@
 // Shadow Shinobi PHP 8 compatibility boundary.
 // Keep legacy entry points running while we modernize the game incrementally.
 
+// Capture the auth cookie before any entry point mutates $_COOKIE
+// (lib.php applies addslashes/htmlspecialchars to superglobals).
+if (isset($_COOKIE['dkgame']) && is_string($_COOKIE['dkgame'])) {
+    $GLOBALS['_SS_RAW_DKGAME'] = $_COOKIE['dkgame'];
+}
+
 $legacyGetDefaults = [
     'do',
     'do2',

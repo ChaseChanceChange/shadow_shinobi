@@ -2,8 +2,12 @@
 // Shadow Shinobi PHP 8 compatibility boundary.
 // Keep legacy entry points running while we modernize the game incrementally.
 
-// The old engine reads many optional GET keys directly. Normalizing them here
-// prevents PHP 8 undefined-key warnings from leaking into the rendered game.
+// Capture the auth cookie before any entry point mutates $_COOKIE
+// (lib.php applies addslashes/htmlspecialchars to superglobals).
+if (isset($_COOKIE['dkgame']) && is_string($_COOKIE['dkgame'])) {
+    $GLOBALS['_SS_RAW_DKGAME'] = $_COOKIE['dkgame'];
+}
+
 $legacyGetDefaults = [
     'do',
     'do2',
