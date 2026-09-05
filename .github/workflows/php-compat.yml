@@ -34,9 +34,17 @@ jobs:
 
       - name: Verify database service
         run: |
-          docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' exec -T db mariadb \
-            -u shadow -pshadow_dev_password shadow_shinobi \
-            -e "SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema='shadow_shinobi';"
+          set -euo pipefail
+          for i in {1..20}; do
+            if docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' exec -T db mariadb \
+              -u shadow -pshadow_dev_password shadow_shinobi \
+              -e "SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema='shadow_shinobi';"; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Database did not accept a SQL connection after startup.'
+          exit 1
 
       - name: Verify public pages are clean
         run: |
