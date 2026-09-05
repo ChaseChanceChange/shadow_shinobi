@@ -2,13 +2,16 @@
 include('lib.php'); 
 $link = opendb();
 $controlquery = doquery("SELECT * FROM {{table}} WHERE id='1' LIMIT 1", "control");
-$controlrow = mysqli_fetch_array($controlquery);
+$controlrow = mysqli_fetch_array($controlquery) ?: array();
 
 include('cookies.php');
 $userrow = checkcookies();
 
-$ord = $_GET['ord'];
-if ($ord == ""){$ord = "level";}
+$allowedOrders = array('level', 'attackpower', 'defensepower');
+$ord = $_GET['ord'] ?? 'level';
+if (!in_array($ord, $allowedOrders, true)) {
+    $ord = 'level';
+}
 
 $page = "
 <table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><center><img src=\"images/rank.gif\" /></center></td></tr></table>
@@ -22,16 +25,18 @@ $page = "
 ";
 
 $count = 1;
-$usersquery = doquery("SELECT * FROM {{table}} ORDER BY $ord DESC, level DESC limit 103", "users");
+$contagemrank = 0;
+$usersquery = doquery("SELECT * FROM {{table}} ORDER BY $ord DESC, level DESC LIMIT 103", "users");
 while ($usersrow = mysqli_fetch_array($usersquery)) {
-    if ($usersrow["authlevel"] != 1) {
-	if ($count == 1) { $color = "bgcolor=\"#ffffff\""; $count = 2; } else { $color = ""; $count = 1; }  
+    if (($usersrow["authlevel"] ?? 0) != 1) {
+        if ($count == 1) { $color = "bgcolor=\"#ffffff\""; $count = 2; } else { $color = ""; $count = 1; }
         $contagemrank += 1;
-    $page .= "<tr><td $color width=\"15%\">$contagemrank</td><td $color width=\"15%\">".$usersrow["level"]."</td><td $color width=\"15%\">".$usersrow["attackpower"]."</td><td $color width=\"15%\">".$usersrow["defensepower"]."</td><td $color width=\"*\"><a href=\"javascript: mostrarchar('".$usersrow["charname"]."');\">".$usersrow["charname"]."</a></td></tr>\n";
-	}
+        $charname = htmlspecialchars((string)($usersrow["charname"] ?? ''), ENT_QUOTES, 'UTF-8');
+        $page .= "<tr><td $color width=\"15%\">$contagemrank</td><td $color width=\"15%\">".($usersrow["level"] ?? 0)."</td><td $color width=\"15%\">".($usersrow["attackpower"] ?? 0)."</td><td $color width=\"15%\">".($usersrow["defensepower"] ?? 0)."</td><td $color width=\"*\"><a href=\"javascript: mostrarchar('".$charname."');\">".$charname."</a></td></tr>\n";
+    }
 }
 
 $page .= "
 </table>";
-display($page, "Rank por Level", false, false, false); 
+display($page, "Rank por Level", false, false, false);
 ?>
