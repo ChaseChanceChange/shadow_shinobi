@@ -17,6 +17,10 @@ $legacyGetDefaults = [
     'tamanho',
     'jogador',
     'id',
+    'action',
+    'ord',
+    'nomechar',
+    'page',
 ];
 
 foreach ($legacyGetDefaults as $legacyGetKey) {
@@ -25,8 +29,21 @@ foreach ($legacyGetDefaults as $legacyGetKey) {
     }
 }
 
-// Keep the browser clean while preserving the full diagnostics in the
-// container's PHP error log. Fatal errors still terminate the request normally.
+$legacyPostDefaults = [
+    'submit',
+    'username',
+    'password',
+    'rememberme',
+    'fala',
+];
+
+foreach ($legacyPostDefaults as $legacyPostKey) {
+    if (!array_key_exists($legacyPostKey, $_POST)) {
+        $_POST[$legacyPostKey] = '';
+    }
+}
+
+// Keep browser output clean while preserving diagnostics in the PHP error log.
 ini_set('display_errors', '0');
 ini_set('display_startup_errors', '0');
 ini_set('log_errors', '1');
