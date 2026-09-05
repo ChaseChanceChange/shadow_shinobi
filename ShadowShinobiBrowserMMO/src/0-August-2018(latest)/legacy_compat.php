@@ -9,7 +9,6 @@ if (isset($_COOKIE['dkgame']) && is_string($_COOKIE['dkgame'])) {
 }
 
 $legacyGetDefaults = [
-    'do',
     'do2',
     'conteudo',
     'latitude',
