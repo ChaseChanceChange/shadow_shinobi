@@ -91,6 +91,10 @@ for ($i = ($userrow["latitude"] + 2); $i >= ($userrow["latitude"] - 2); $i--){
 			
 			//adicionando personagens
 			$matriz[$i][$j]["title2"] = "";
+			// PHP 8: initialize cell keys before read/compare
+			if (!isset($matriz[$i][$j]["imagem"])) { $matriz[$i][$j]["imagem"] = ""; }
+			if (!isset($matriz[$i][$j]["imagemtd"])) { $matriz[$i][$j]["imagemtd"] = ""; }
+			if (!isset($matriz[$i][$j]["title"])) { $matriz[$i][$j]["title"] = ""; }
 			include('localpersonagens.php');
 			
 			$numjogadores = 0;
@@ -132,7 +136,7 @@ for ($i = ($userrow["latitude"] + 2); $i >= ($userrow["latitude"] - 2); $i--){
 				$matriz[$i][$j]["title"] .= " - ".$numjogadores." Jogador(es) no Mapa.";}
 				
 			
-		
+			
 	}//fim for
 }//fim for
 //fim contas e acertamento dos vetores.
@@ -148,7 +152,10 @@ $minimap = "<table border=\"1\" cellspacing=\"0\" cellpadding=\"0\" background=\
 for ($i = ($userrow["latitude"] + 2); $i >= ($userrow["latitude"] - 2); $i--){
 	$minimap .= "<tr>";
 	for ($j = ($userrow["longitude"] - 2); $j <= ($userrow["longitude"] + 2); $j++){
-		$minimap .= "<td style=\"border:1px #ffefb7 solid;background-repeat:no-repeat;;background-position:center center\" background=\"".$matriz[$i][$j]["imagemtd"]."\"><a href=\"index.php?do=andar&latitude=".$i."&longitude=".$j."\"><img src=\"".$matriz[$i][$j]["imagem"]."\" title=\"".$matriz[$i][$j]["title"]."\" border=\"0\"></a></td>";
+		$cellImagem = $matriz[$i][$j]["imagem"] ?? "images/24/gif24.gif";
+		$cellImagemtd = $matriz[$i][$j]["imagemtd"] ?? "";
+		$cellTitle = $matriz[$i][$j]["title"] ?? "";
+		$minimap .= "<td style=\"border:1px #ffefb7 solid;background-repeat:no-repeat;;background-position:center center\" background=\"".$cellImagemtd."\"><a href=\"index.php?do=andar&latitude=".$i."&longitude=".$j."\"><img src=\"".$cellImagem."\" title=\"".$cellTitle."\" border=\"0\"></a></td>";
 	}
 	$minimap .= "</tr>";
 }
