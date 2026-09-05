@@ -6,6 +6,10 @@ include('funcoesinclusas.php');
 
 function conteudo($townrow){
 
+$add1 = "";
+$add2 = "";
+$add3 = "";
+
 if ($townrow["id"] == 5){$add3 = "<a href=\"jutsudebusca.php?do=jutsu\"><img src=\"images/24/busca.gif\" border=\"0\" title=\"Treinar 'Jutsu de Busca'\"></a>";}
 elseif ($townrow["id"] == 2){$add3 = "<a href=\"senjutsu.php?do=jutsu\"><img src=\"images/24/senjutsu.gif\" border=\"0\" title=\"Treinar Senjutsu\"></a><a href=\"senjutsu.php?do=chamar\"><img src=\"images/24/chamar.gif\" border=\"0\" title=\"Chamar Fukasaku & Shima\"></a>";}
 
