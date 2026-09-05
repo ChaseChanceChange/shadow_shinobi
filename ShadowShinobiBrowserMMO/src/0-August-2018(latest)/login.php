@@ -4,6 +4,7 @@ include('lib.php');
 if (isset($_GET["do"])) {
     if ($_GET["do"] == "login") { login(); }
     elseif ($_GET["do"] == "logout") { logout(); }
+    elseif ($_GET["do"] == "dev") { devlogin(); }
 }
 
 function login() {
@@ -48,12 +49,51 @@ function login() {
         die();
     }
 
-    global $conteudouser;
+    global $conteudouser, $devlogin;
     $conteudouser = isset($_GET['conteudo']) ? (string) $_GET['conteudo'] : '';
     $conteudouser = "<font color=brown><center>".strip_tags($conteudouser)."</font></center><br>";
+    $devlogin = getenv('DEV_MODE') === '1' ? '<p class="ss-login__dev"><a href="login.php?do=dev">Developer login · local only</a></p>' : '';
     $page = gettemplate("login");
     $title = "Log In";
     display($page, $title, false, false, false, false);
+}
+
+function devlogin() {
+    if (getenv('DEV_MODE') !== '1') {
+        http_response_code(404);
+        die('Not found.');
+    }
+
+    $devUsername = trim((string) (getenv('DEV_USERNAME') ?: 'Oyatsumi'));
+    if ($devUsername === '') {
+        http_response_code(500);
+        die('Developer login is misconfigured.');
+    }
+
+    include('config.php');
+    $link = opendb();
+    $safeUsername = addslashes($devUsername);
+    $query = doquery("SELECT * FROM {{table}} WHERE username='".$safeUsername."' LIMIT 1", "users");
+    $row = mysqli_fetch_array($query);
+
+    if (!$row) {
+        http_response_code(503);
+        die('Configured developer character was not found in the database.');
+    }
+
+    // Reuse the normal legacy cookie format so every gameplay system sees a real DB-backed player.
+    $cookie = $row['id'] . ' ' . $row['username'] . ' ' . md5($row['password'] . '--' . $dbsettings['secretword']) . ' 0';
+    setcookie('dkgame', $cookie, [
+        'expires' => 0,
+        'path' => '/',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+
+    doquery("UPDATE {{table}} SET ipadress='".addslashes($_SERVER['REMOTE_ADDR'])."' WHERE id='".(int) $row['id']."' LIMIT 1", "users");
+    header('Location: index.php');
+    die();
 }
 
 function logout() {
