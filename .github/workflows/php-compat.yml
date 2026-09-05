@@ -68,6 +68,22 @@ jobs:
           check_page 'http://127.0.0.1:8080/help.php' /tmp/help.html
           check_page 'http://127.0.0.1:8080/rank.php' /tmp/rank.html
 
+      - name: Verify rendered JavaScript syntax
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          html = Path('/tmp/help.html').read_text(encoding='utf-8', errors='replace')
+          scripts = re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', html, flags=re.I | re.S)
+          if not scripts:
+              raise SystemExit('No inline JavaScript blocks found in rendered help page')
+          Path('/tmp/rendered-page.js').write_text('\n\n'.join(scripts), encoding='utf-8')
+          print(f'Extracted {len(scripts)} inline script block(s)')
+          PY
+          node --check /tmp/rendered-page.js
+
       - name: Verify developer diagnostics and login
         run: |
           set -euo pipefail
