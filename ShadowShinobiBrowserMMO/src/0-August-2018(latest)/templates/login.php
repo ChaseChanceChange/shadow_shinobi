@@ -1,5 +1,5 @@
 <?php
-global $conteudouser;
+global $conteudouser, $devlogin;
 $template = <<<THEVERYENDOFYOU
 <section class="ss-login" aria-labelledby="ss-login-title">
   <div class="ss-login__brand">
@@ -43,6 +43,8 @@ $template = <<<THEVERYENDOFYOU
       <p class="ss-login__hint">Your session stays compatible with the original game account system.</p>
     </fieldset>
   </form>
+
+  $devlogin
 
   <div class="ss-login__links">
     <p>New to Shadow Shinobi? <a href="users.php?do=register">Create your character.</a></p>
