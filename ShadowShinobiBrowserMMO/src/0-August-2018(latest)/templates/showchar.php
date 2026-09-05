@@ -5,12 +5,13 @@ elseif ($userrow["acesso"] == 2){$userrow["adm"] = "<span class=\"ss-role ss-rol
 elseif ($userrow["acesso"] == 3){$userrow["adm"] = "<span class=\"ss-role ss-role--gm\">GameMaster</span>";}
 else {$userrow["adm"] = "";}
 
-$durabm = explode(",",$userrow["durabilidade"]);
+$durabm = explode(",", (string)($userrow["durabilidade"] ?? ""));
 for ($i = 1; $i < 7; $i ++) {
-    if (isset($durabm[$i]) && $durabm[$i] == "X") {$durabm[$i] = "*";}
+    if (!isset($durabm[$i])) { $durabm[$i] = "0"; }
+    if ($durabm[$i] == "X") {$durabm[$i] = "*";}
 }
-if ($userrow["senjutsuhtml"] != "") {$userrow["magiclist"] = "<span class=\"ss-ability-tag\">Senjutsu</span><br>".$userrow["magiclist"];}
-if ($userrow["jutsudebuscahtml"] != "") {$userrow["magiclist"] = "<span class=\"ss-ability-tag\">Search Technique</span><br>".$userrow["magiclist"];}
+if (($userrow["senjutsuhtml"] ?? "") != "") {$userrow["magiclist"] = "<span class=\"ss-ability-tag\">Senjutsu</span><br>".($userrow["magiclist"] ?? "");}
+if (($userrow["jutsudebuscahtml"] ?? "") != "") {$userrow["magiclist"] = "<span class=\"ss-ability-tag\">Search Technique</span><br>".($userrow["magiclist"] ?? "");}
 
 $template = <<<THEVERYENDOFYOU
 <style>
