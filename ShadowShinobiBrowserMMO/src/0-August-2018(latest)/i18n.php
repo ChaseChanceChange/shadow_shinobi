@@ -66,7 +66,7 @@ function ui_en($text) {
             'Explorando & Lutando' => 'Exploring & Combat', 'Painel de Status' => 'Status Panel',
             'Itens & Drops' => 'Gear & Recovery', 'Monstros' => 'Threats', 'Jutsus' => 'Arts',
             'Leveis' => 'Standing', 'Créditos' => 'Credits', 'Topo' => 'Top',
-            'Dados' => 'Details', 'Nenhum' => 'None',
+            'Dados' => 'Details', 'Nenhum' => 'None', 'Ryou' => 'Coin',
 
             // Existing English wording -> Shadow terminology.
             'Mission Complete' => 'Contract Complete', 'Complete Mission' => 'Complete Contract',
@@ -79,8 +79,9 @@ function ui_en($text) {
             'Town' => 'Settlement', 'Village' => 'Enclave', 'Fighting' => 'In Combat', 'In Town' => 'In Settlement',
             'Level Rankings' => 'Standing Rankings', 'Level' => 'Standing', 'Rank' => 'Standing',
             'Experience' => 'Insight', 'Chakra' => 'Essence', 'Bank' => 'Vault', 'Backpack' => 'Pack',
-            'Items' => 'Gear', 'Item' => 'Gear', 'Ability' => 'Art', 'Abilities' => 'Arts',
+            'Items' => 'Gear', 'Item' => 'Gear', 'Equipment' => 'Gear', 'Ability' => 'Art', 'Abilities' => 'Arts',
             'Monsters' => 'Threats', 'Drops' => 'Recovery', 'Mission' => 'Contract',
+            'Search Technique' => 'Search Art', 'Jutsu Ocular' => 'Essence Sight',
             'Exploring & Fighting' => 'Exploring & Combat', 'Playing' => 'Active',
         );
     }
