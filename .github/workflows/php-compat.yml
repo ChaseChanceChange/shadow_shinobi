@@ -84,11 +84,18 @@ jobs:
           PY
           node --check /tmp/rendered-page.js
 
-      - name: Verify developer diagnostics and login
+      - name: Verify developer diagnostics and login cookie
         run: |
           set -euo pipefail
           curl --fail --silent --show-error http://127.0.0.1:8080/dev_health.php > /tmp/dev-health.html
           grep -q 'Core checks passing' /tmp/dev-health.html
+          # Capture Set-Cookie without following redirects
+          curl --silent --show-error -D /tmp/dev-login.headers -o /tmp/dev-login.body \
+            -c /tmp/shadow.cookies -b /tmp/shadow.cookies \
+            'http://127.0.0.1:8080/login.php?do=dev' || true
+          grep -qi '^Set-Cookie:.*dkgame=' /tmp/dev-login.headers
+          grep -q dkgame /tmp/shadow.cookies
+          # Follow redirect with cookie jar
           curl --fail --silent --show-error -L -c /tmp/shadow.cookies -b /tmp/shadow.cookies \
             'http://127.0.0.1:8080/login.php?do=dev' > /tmp/dev-login.html
           test -s /tmp/dev-login.html
@@ -96,24 +103,55 @@ jobs:
             echo 'Runtime error text found after developer login'
             exit 1
           fi
+          if grep -Eqi 'ss-login__form|name="username"' /tmp/dev-login.html; then
+            echo 'Still on login page after developer login'
+            exit 1
+          fi
           grep -q 'Shadow Shinobi' /tmp/dev-login.html
 
       - name: Verify authenticated shell pages
         run: |
           set -euo pipefail
-          declare -A pages=(
-            [home]='http://127.0.0.1:8080/index.php'
-            [backpack]='http://127.0.0.1:8080/backpack.php'
-            [character]='http://127.0.0.1:8080/index.php?do=showchar'
-          )
-          for name in "${!pages[@]}"; do
+          check_auth() {
+            name="$1"
+            url="$2"
             output="/tmp/${name}.html"
-            curl --fail --silent --show-error -b /tmp/shadow.cookies "${pages[$name]}" > "$output"
-            if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' "$output"; then
-              echo "Runtime error text found in ${pages[$name]}"
+            code=$(curl --silent --show-error -o "$output" -w '%{http_code}' -b /tmp/shadow.cookies "$url")
+            if [[ "$code" == "302" || "$code" == "301" ]]; then
+              loc=$(curl --silent --show-error -I -b /tmp/shadow.cookies "$url" | tr -d '\r' | awk -F': ' 'tolower($1)=="location"{print $2; exit}')
+              if echo "$loc" | grep -qi 'login.php'; then
+                echo "$name redirected to login: $loc"
+                exit 1
+              fi
+            fi
+            if [[ ! -s "$output" && "$code" != "302" ]]; then
+              echo "Empty body for $name (HTTP $code)"
               exit 1
             fi
-          done
+            if [[ -s "$output" ]]; then
+              if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' "$output"; then
+                echo "Runtime error text found in $url"
+                exit 1
+              fi
+              if grep -Eqi 'ss-login__form|name="username"' "$output"; then
+                echo "Login form rendered for authenticated route $name"
+                exit 1
+              fi
+            fi
+            echo "OK $name HTTP $code"
+          }
+          check_auth home 'http://127.0.0.1:8080/index.php'
+          check_auth backpack 'http://127.0.0.1:8080/backpack.php'
+          check_auth character 'http://127.0.0.1:8080/index.php?do=showchar'
+          check_auth rank 'http://127.0.0.1:8080/rank.php'
+          check_auth help 'http://127.0.0.1:8080/help.php'
+          check_auth town_inn 'http://127.0.0.1:8080/index.php?do=inn'
+          check_auth explore_move 'http://127.0.0.1:8080/index.php?do=move'
+
+      - name: Run packaged smoke script
+        run: |
+          chmod +x ShadowShinobiBrowserMMO/scripts/smoke-test.sh
+          BASE_URL=http://127.0.0.1:8080 bash ShadowShinobiBrowserMMO/scripts/smoke-test.sh
 
       - name: Dump logs on failure
         if: failure()
