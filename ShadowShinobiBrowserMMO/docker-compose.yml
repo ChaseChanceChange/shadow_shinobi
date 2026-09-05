@@ -13,6 +13,9 @@ services:
       DB_NAME: shadow_shinobi
       DB_PREFIX: dk
       GAME_SECRET: local-development-secret-change-me
+      APP_ENV: local
+      DEV_MODE: "1"
+      DEV_USERNAME: Oyatsumi
     volumes:
       - ./src/0-August-2018(latest):/var/www/html
     depends_on:
