@@ -24,7 +24,13 @@ function ui_en($text) {
             'Cidade' => 'Town', 'Vila' => 'Village', 'Explorando' => 'Exploring',
             'Lutando' => 'Fighting', 'Na Cidade' => 'In Town',
             'Comprar' => 'Buy', 'Vender' => 'Sell', 'Voltar' => 'Back', 'Sair' => 'Logout',
-            'Conta' => 'Account', 'Nome' => 'Name', 'Senha' => 'Password',
+            'Voltar ao Jogo' => 'Back to Game', 'Rank por Level' => 'Level Rankings',
+            'Rank' => 'Rank', 'Level' => 'Level', 'Nome' => 'Name',
+            'Poder de Ataque' => 'Attack Power', 'Poder de Defesa' => 'Defense Power',
+            'Ordenar por Level' => 'Sort by Level',
+            'Ordenar por Poder de Ataque' => 'Sort by Attack Power',
+            'Ordenar por Poder de Defesa' => 'Sort by Defense Power',
+            'Conta' => 'Account', 'Senha' => 'Password',
             'Nível' => 'Level', 'Força' => 'Strength', 'Destreza' => 'Dexterity',
             'Agilidade' => 'Agility', 'Sorte' => 'Luck', 'Inteligência' => 'Intelligence',
             'Precisão' => 'Accuracy', 'Determinação' => 'Determination',
@@ -52,6 +58,13 @@ function ui_en($text) {
             'Bem-vindo' => 'Welcome', 'Porcentagem Concluída:' => 'Completion:',
             'Não Obrigatória.' => 'Optional.', 'Obrigatória.' => 'Required.',
             'Sim' => 'Yes', 'Não' => 'No', 'Sucesso' => 'Success',
+            'Introdução' => 'Introduction', 'Especialização' => 'Specialization',
+            'Especializações' => 'Specializations', 'Níveis de Dificuldade' => 'Difficulty Levels',
+            'Jogando' => 'Playing', 'Em uma cidade' => 'In a Town',
+            'Explorando & Lutando' => 'Exploring & Fighting', 'Painel de Status' => 'Status Panel',
+            'Itens & Drops' => 'Items & Drops', 'Monstros' => 'Monsters', 'Jutsus' => 'Abilities',
+            'Leveis' => 'Levels', 'Créditos' => 'Credits', 'Topo' => 'Top',
+            'Dados' => 'Details', 'Nenhum' => 'None',
         );
     }
     return strtr($text, $map);
