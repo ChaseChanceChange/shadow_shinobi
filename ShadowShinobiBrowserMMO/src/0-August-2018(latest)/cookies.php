@@ -7,7 +7,7 @@ function checkcookies() {
     $row = false;
 
     if (!isset($_COOKIE['dkgame'])) {
-        return $row;
+        return null;
     }
 
     // COOKIE FORMAT:
