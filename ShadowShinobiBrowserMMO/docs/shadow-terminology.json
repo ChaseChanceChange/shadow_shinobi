@@ -1,0 +1,47 @@
+{
+  "schema_version": "0.1.0",
+  "game": "Shadow Shinobi",
+  "status": "provisional-canon",
+  "rules": {
+    "preserve_engine_identifiers": true,
+    "preserve_gameplay_formulas": true,
+    "rewrite_player_facing_fiction": true,
+    "avoid_literal_franchise_substitution": true
+  },
+  "terms": {
+    "ninja": "Shinobi",
+    "jutsu": "Art",
+    "technique": "Art",
+    "chakra": "Essence",
+    "village": "Enclave",
+    "kage": "Warden",
+    "mission": "Contract",
+    "quest": "Contract",
+    "training": "Discipline",
+    "rank": "Standing",
+    "duel": "Challenge",
+    "monster": "Threat",
+    "enemy": "Threat",
+    "drop": "Recovery",
+    "inventory": "Pack",
+    "backpack": "Pack",
+    "equipment": "Gear",
+    "map": "World Map",
+    "town": "Settlement",
+    "alchemy": "Refinement",
+    "bank": "Vault",
+    "global_chat": "Open Channel",
+    "map_chat": "Local Channel",
+    "character_sheet": "Operative Record",
+    "experience": "Insight",
+    "level": "Standing"
+  },
+  "provisional_terms": [
+    "currency",
+    "class names",
+    "rank ladder",
+    "faction leader titles",
+    "Essence origin",
+    "special passive systems"
+  ]
+}
