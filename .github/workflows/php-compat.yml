@@ -32,21 +32,62 @@ jobs:
       - name: Build and start full stack
         run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' up -d --build
 
-      - name: Verify web runtime
-        run: |
-          for i in {1..30}; do
-            if curl --fail --silent --show-error http://127.0.0.1:8080/ > /tmp/shadow-home.html; then
-              break
-            fi
-            sleep 2
-          done
-          test -s /tmp/shadow-home.html
-
       - name: Verify database service
         run: |
           docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' exec -T db mariadb \
             -u shadow -pshadow_dev_password shadow_shinobi \
             -e "SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema='shadow_shinobi';"
+
+      - name: Verify public pages are clean
+        run: |
+          set -euo pipefail
+          check_page() {
+            url="$1"
+            output="$2"
+            for i in {1..30}; do
+              if curl --fail --silent --show-error "$url" > "$output"; then
+                break
+              fi
+              sleep 2
+            done
+            test -s "$output"
+            if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' "$output"; then
+              echo "Runtime error text found in $url"
+              return 1
+            fi
+          }
+          check_page http://127.0.0.1:8080/login.php?do=login /tmp/login.html
+          check_page http://127.0.0.1:8080/help.php /tmp/help.html
+          check_page http://127.0.0.1:8080/rank.php /tmp/rank.html
+
+      - name: Verify developer diagnostics and login
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error http://127.0.0.1:8080/dev_health.php > /tmp/dev-health.html
+          grep -q 'Core checks passing' /tmp/dev-health.html
+          curl --fail --silent --show-error -L -c /tmp/shadow.cookies -b /tmp/shadow.cookies \
+            http://127.0.0.1:8080/login.php?do=dev > /tmp/dev-login.html
+          test -s /tmp/dev-login.html
+          if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' /tmp/dev-login.html; then
+            echo 'Runtime error text found after developer login'
+            exit 1
+          fi
+          grep -q 'Shadow Shinobi' /tmp/dev-login.html
+
+      - name: Verify authenticated shell pages
+        run: |
+          set -euo pipefail
+          for url in \
+            'http://127.0.0.1:8080/index.php' \
+            'http://127.0.0.1:8080/backpack.php' \
+            'http://127.0.0.1:8080/showchar.php'; do
+            output="/tmp/$(echo "$url" | sed 's#[^A-Za-z0-9]#_#g').html"
+            curl --fail --silent --show-error -b /tmp/shadow.cookies "$url" > "$output"
+            if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' "$output"; then
+              echo "Runtime error text found in $url"
+              exit 1
+            fi
+          done
 
       - name: Dump logs on failure
         if: failure()
