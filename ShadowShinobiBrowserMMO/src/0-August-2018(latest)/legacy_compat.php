@@ -1,9 +1,11 @@
 <?php
-// Source-level PHP 8 compatibility boundary for the legacy game.
-// Optional request keys used by the original entry points are normalized to
-// empty strings so missing GET parameters do not emit PHP 8 undefined-key warnings.
+// Shadow Shinobi PHP 8 compatibility boundary.
+// Keep legacy entry points running while we modernize the game incrementally.
 
+// The old engine reads many optional GET keys directly. Normalizing them here
+// prevents PHP 8 undefined-key warnings from leaking into the rendered game.
 $legacyGetDefaults = [
+    'do',
     'conteudo',
     'latitude',
     'longitude',
@@ -13,6 +15,8 @@ $legacyGetDefaults = [
     'monstro',
     'item',
     'tamanho',
+    'jogador',
+    'id',
 ];
 
 foreach ($legacyGetDefaults as $legacyGetKey) {
@@ -20,6 +24,12 @@ foreach ($legacyGetDefaults as $legacyGetKey) {
         $_GET[$legacyGetKey] = '';
     }
 }
+
+// Keep the browser clean while preserving the full diagnostics in the
+// container's PHP error log. Fatal errors still terminate the request normally.
+ini_set('display_errors', '0');
+ini_set('display_startup_errors', '0');
+ini_set('log_errors', '1');
 
 if (!isset($indexconteudo)) {
     $indexconteudo = '';
