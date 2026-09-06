@@ -16,50 +16,52 @@ if ($do === 'login' || $do === '') {
 function login() {
     include('config.php');
     $link = opendb();
+    $loginMessage = '';
 
     if (isset($_POST['submit'])) {
         $username = isset($_POST['username']) ? trim((string) $_POST['username']) : '';
         $password = isset($_POST['password']) ? (string) $_POST['password'] : '';
 
+        // Render validation errors directly instead of redirecting back to the
+        // same URL. This prevents browsers from entering a redirect loop when a
+        // form submission arrives without the expected POST fields.
         if ($username === '' || $password === '') {
-            header('Location: login.php?do=login&conteudo=Please enter your account name and password.');
-            die();
+            $loginMessage = 'Please enter your account name and password.';
+        } else {
+            $passwordHash = md5($password);
+            $query = doquery("SELECT * FROM {{table}} WHERE username='".$username."' AND password='".$passwordHash."' LIMIT 1", 'users');
+            if (mysqli_num_rows($query) != 1) {
+                $loginMessage = 'Invalid username or password. Please try again.';
+            } else {
+                $usersqueryd = doquery("SELECT * FROM {{table}} WHERE UNIX_TIMESTAMP(onlinetime) >= '".(time()-61)."' AND username='".$username."' LIMIT 1", 'users');
+                $row = mysqli_fetch_array($query);
+                if ((mysqli_num_rows($usersqueryd) == 1) && (strtolower($username) != '220292') && ($row['ipadress'] != $_SERVER['REMOTE_ADDR'])) {
+                    $loginMessage = 'Someone is already logged into your account. Please wait a minute and try again. If this persists, report it to a staff member.';
+                } else {
+                    if (isset($_POST['rememberme'])) { $expiretime = time()+31536000; $rememberme = 1; } else { $expiretime = 0; $rememberme = 0; }
+                    $cookie = $row['id'] . ' ' . $row['username'] . ' ' . md5($row['password'] . '--' . $dbsettings['secretword']) . ' ' . $rememberme;
+                    setcookie('dkgame', $cookie, [
+                        'expires' => $expiretime,
+                        'path' => '/',
+                        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+                        'httponly' => true,
+                        'samesite' => 'Lax',
+                    ]);
+                    $GLOBALS['_SS_RAW_DKGAME'] = $cookie;
+                    $_COOKIE['dkgame'] = $cookie;
+
+                    doquery("UPDATE {{table}} SET ipadress='".$_SERVER['REMOTE_ADDR']."' WHERE username='".$username."' AND password='".$passwordHash."' LIMIT 1", 'users');
+                    header('Location: index.php');
+                    die();
+                }
+            }
         }
-
-        $passwordHash = md5($password);
-        $query = doquery("SELECT * FROM {{table}} WHERE username='".$username."' AND password='".$passwordHash."' LIMIT 1", 'users');
-        if (mysqli_num_rows($query) != 1) {
-            header('Location: login.php?do=login&conteudo=Invalid username or password. Please try again.');
-            die();
-        }
-
-        $usersqueryd = doquery("SELECT * FROM {{table}} WHERE UNIX_TIMESTAMP(onlinetime) >= '".(time()-61)."' AND username='".$username."' LIMIT 1", 'users');
-        $row = mysqli_fetch_array($query);
-        if ((mysqli_num_rows($usersqueryd) == 1) && (strtolower($username) != '220292') && ($row['ipadress'] != $_SERVER['REMOTE_ADDR'])) {
-            header('Location: login.php?do=login&conteudo=Someone is already logged into your account. Please wait a minute and try again. If this persists, report it to a staff member.');
-            die();
-        }
-
-        if (isset($_POST['rememberme'])) { $expiretime = time()+31536000; $rememberme = 1; } else { $expiretime = 0; $rememberme = 0; }
-        $cookie = $row['id'] . ' ' . $row['username'] . ' ' . md5($row['password'] . '--' . $dbsettings['secretword']) . ' ' . $rememberme;
-        setcookie('dkgame', $cookie, [
-            'expires' => $expiretime,
-            'path' => '/',
-            'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
-            'httponly' => true,
-            'samesite' => 'Lax',
-        ]);
-        $GLOBALS['_SS_RAW_DKGAME'] = $cookie;
-        $_COOKIE['dkgame'] = $cookie;
-
-        doquery("UPDATE {{table}} SET ipadress='".$_SERVER['REMOTE_ADDR']."' WHERE username='".$username."' AND password='".$passwordHash."' LIMIT 1", 'users');
-        header('Location: index.php');
-        die();
     }
 
     global $conteudouser, $devlogin;
-    $conteudouser = isset($_GET['conteudo']) ? (string) $_GET['conteudo'] : '';
-    $conteudouser = '<font color=brown><center>'.strip_tags($conteudouser).'</font></center><br>';
+    $queryMessage = isset($_GET['conteudo']) ? (string) $_GET['conteudo'] : '';
+    $message = $loginMessage !== '' ? $loginMessage : $queryMessage;
+    $conteudouser = '<font color=brown><center>'.strip_tags($message).'</font></center><br>';
     $devlogin = getenv('DEV_MODE') === '1' ? '<p class="ss-login__dev"><a href="login.php?do=dev">Developer login · local only</a></p>' : '';
     $page = gettemplate('login');
     $title = 'Log In';
