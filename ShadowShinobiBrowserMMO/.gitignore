@@ -1,5 +1,7 @@
 .env
 *.log
+*.cookies
+*.headers
 .DS_Store
 .idea/
 .vscode/
