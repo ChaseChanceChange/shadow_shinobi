@@ -29,8 +29,6 @@ services:
       MARIADB_PASSWORD: shadow_dev_password
       MARIADB_ROOT_PASSWORD: root_dev_password
     healthcheck:
-      # Use TCP/3306 so the check cannot succeed against MariaDB's
-      # temporary init server, which listens on the Unix socket only.
       test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -P 3306 -u shadow -pshadow_dev_password --silent"]
       interval: 5s
       timeout: 5s
@@ -41,6 +39,7 @@ services:
       - ./database (sql)/shadow_shinobi.sql:/docker-entrypoint-initdb.d/01-shadow.sql:ro
       - ./database (sql)/migrations/001_shadow_identity.sql:/docker-entrypoint-initdb.d/02-shadow-001.sql:ro
       - ./database (sql)/migrations/002_shadow_content_cleanup.sql:/docker-entrypoint-initdb.d/03-shadow-002.sql:ro
+      - ./database (sql)/migrations/003_shadow_final_identity.sql:/docker-entrypoint-initdb.d/04-shadow-003.sql:ro
   db-admin:
     image: phpmyadmin:5-apache
     depends_on:
