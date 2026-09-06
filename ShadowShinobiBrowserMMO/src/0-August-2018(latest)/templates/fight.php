@@ -3,10 +3,11 @@ $template = <<<THEVERYENDOFYOU
 <section class="ss-combat" aria-labelledby="ss-combat-title">
   <div class="ss-combat__header">
     <div>
-      <h1 class="ss-combat__title" id="ss-combat-title">Combat</h1>
-      <div class="ss-combat__sub">Combat results and commands are driven by the legacy game engine.</div>
+      <span class="ss-eyebrow">FIELD ENGAGEMENT</span>
+      <h1 class="ss-combat__title" id="ss-combat-title">Combat Encounter</h1>
+      <div class="ss-combat__sub">Assess the threat, choose an Art, or break contact.</div>
     </div>
-    <div class="small">{{monstername}}</div>
+    <div class="ss-combat__threat"><span class="ss-eyebrow">TARGET</span><strong>{{monstername}}</strong></div>
   </div>
 
   {{indexconteudo}}
@@ -16,9 +17,12 @@ $template = <<<THEVERYENDOFYOU
       <div class="ss-combat__fighter">
         <div>
           {{dados}}
-          <p><strong>Current Threat:</strong> {{monstername}}</p>
-          {{yourturn}}
-          {{monsterturn}}
+          <div class="ss-combat__status"><span>Engagement status</span><strong>ACTIVE</strong></div>
+          <p class="ss-combat__target"><strong>Current Threat</strong> {{monstername}}</p>
+          <div class="ss-combat__log">
+            {{yourturn}}
+            {{monsterturn}}
+          </div>
           {{monsterhp}}
           {{command}}
         </div>
