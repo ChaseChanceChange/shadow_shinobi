@@ -24,7 +24,7 @@ kage = CASE id
 END
 WHERE id IN (1,2,3,4,5);
 
--- Full item catalogue retheme. IDs, prices, attributes, and types are intact.
+-- Full verified item catalogue retheme. IDs, prices, attributes, and types are intact.
 UPDATE dk_items
 SET name = CASE id
   WHEN 1 THEN 'Field Bandage'
@@ -73,15 +73,16 @@ SET name = CASE id
   WHEN 44 THEN 'Junior Guard Shirt'
   WHEN 45 THEN 'Guardian Staff'
   WHEN 46 THEN 'Mistveil Honor Guard'
-  ELSE CONCAT('Gear ', id)
-END;
+  ELSE name
+END
+WHERE id BETWEEN 1 AND 46;
 
--- Ability catalogue. Keep the spell mechanics and IDs untouched; only the display names change.
+-- Ability catalogue. Keep mechanics and IDs untouched; only display names change.
 UPDATE dk_spells
 SET name = CONCAT('Shadow Art ', LPAD(id, 2, '0'));
 
 -- Historical seed accounts are test data. Keep credentials/IDs intact but remove
--- franchise character names from any player-facing character field.
+-- franchise character names from player-facing character/state fields.
 UPDATE dk_users
 SET
   charname = CONCAT('Operative ', id),
