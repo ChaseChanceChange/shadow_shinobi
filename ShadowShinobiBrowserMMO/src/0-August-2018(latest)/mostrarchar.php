@@ -16,7 +16,7 @@ $nomechar = $_GET['nomechar'];
 
 
     $userquery = doquery("SELECT * FROM {{table}} WHERE charname='$nomechar' LIMIT 1", "users");
-    if (mysqli_num_rows($userquery) == 1) { $userrow = mysqli_fetch_array($userquery); } else { echo "Nenhum usuário."; die();}
+    if (mysqli_num_rows($userquery) == 1) { $userrow = mysqli_fetch_array($userquery); } else { echo "No such user."; die();}
     
     // Format various userrow stuffs.
     $userrow["experience"] = number_format($userrow["experience"]);
@@ -44,21 +44,21 @@ $nomechar = $_GET['nomechar'];
     elseif ($userrow["difficulty"] == 2) { $userrow["difficulty"] = $controlrow["diff2name"]; }
     elseif ($userrow["difficulty"] == 3) { $userrow["difficulty"] = $controlrow["diff3name"]; }
     
-	//sefor administrador
-	if ($userrow["authlevel"] == 1) {$userrow["adm"] = "<font color=green>Administrador</font><br>";}
+	// if administrator
+	if ($userrow["authlevel"] == 1) {$userrow["adm"] = "<font color=green>Administrator</font><br>";}
 	elseif ($userrow["acesso"] == 2){$userrow["adm"] = "<font color=orange>Tutor</font><br>";}
 	elseif ($userrow["acesso"] == 3){$userrow["adm"] = "<font color=blue>GameMaster</font><br>";}
 	else {$userrow["adm"] = "";}
 	
-		//durabilidade
+		// durability
 	$durabm = explode(",",$userrow["durabilidade"]);
 	for ($i = 1; $i < 7; $i ++){
 	if ($durabm[$i] == "X"){$durabm[$i] = "*";}
 	$userrow["durabm".$i] = $durabm[$i];
 	}
 	
-	//Stat dos equipamentos
-		//atributo dos itens
+	// Equipment stats
+		// item attributes
 	include('funcoesinclusas.php');
 	$userrow["armaatr"] = conteudoexplic($userrow["weaponid"], '1', 'armaatr', $durabm[1]);	
 	$userrow["shieldatr"] = conteudoexplic($userrow["shieldid"], '3', 'shieldatr', $durabm[3]);	
@@ -82,8 +82,8 @@ $nomechar = $_GET['nomechar'];
     }
     if ($userrow["magiclist"] == "") { $userrow["magiclist"] = "None"; }
 	
-	if ($userrow["jutsudebuscahtml"] == 1){ $userrow["magiclist"] = "<font color=darkgreen>Jutsu de Busca</font><br>".$userrow["magiclist"];}
-	if ($userrow["senjutsuhtml"] != ""){ $userrow["magiclist"] = "<font color=darkred>Senjutsu</font><br>".$userrow["magiclist"];}
+	if ($userrow["jutsudebuscahtml"] == 1){ $userrow["magiclist"] = "<font color=darkgreen>Search Art</font><br>".$userrow["magiclist"];}
+	if ($userrow["senjutsuhtml"] != ""){ $userrow["magiclist"] = "<font color=darkred>Essence Discipline</font><br>".$userrow["magiclist"];}
 
 	
 
@@ -95,10 +95,10 @@ $nomechar = $_GET['nomechar'];
 
 
 	
-	$embaixo = "<center><font color=\"white\">Link do Personagem:</font><br><input type=\"text\" size=\"20\" value=\"http://".$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['PHP_SELF']), '/\\')."/mostrarchar.php?nomechar=".$userrow["charname"]."\"></center>";
+	$embaixo = "<center><font color=\"white\">Character Link:</font><br><input type=\"text\" size=\"20\" value=\"http://".$_SERVER['HTTP_HOST'].rtrim(dirname($_SERVER['PHP_SELF']), '/\\')."/mostrarchar.php?nomechar=".$userrow["charname"]."\"></center>";
     $charsheet = gettemplate("onlinechar");
     $page = $xml . gettemplate("minimal").$embaixo;
-    $array = array("content"=>parsetemplate($charsheet, $userrow), "title"=>"Informação do Personagem");
+    $array = array("content"=>parsetemplate($charsheet, $userrow), "title"=>"Operative Record");
     echo parsetemplate($page, $array);
     die();
 	

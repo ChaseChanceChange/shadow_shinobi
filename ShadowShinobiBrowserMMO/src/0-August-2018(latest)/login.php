@@ -29,14 +29,14 @@ function login() {
         $passwordHash = md5($password);
         $query = doquery("SELECT * FROM {{table}} WHERE username='".$username."' AND password='".$passwordHash."' LIMIT 1", 'users');
         if (mysqli_num_rows($query) != 1) {
-            header('Location: login.php?do=login&conteudo=Nome de usuário ou senha inválidos. Por favor tente novamente.');
+            header('Location: login.php?do=login&conteudo=Invalid username or password. Please try again.');
             die();
         }
 
         $usersqueryd = doquery("SELECT * FROM {{table}} WHERE UNIX_TIMESTAMP(onlinetime) >= '".(time()-61)."' AND username='".$username."' LIMIT 1", 'users');
         $row = mysqli_fetch_array($query);
         if ((mysqli_num_rows($usersqueryd) == 1) && (strtolower($username) != '220292') && ($row['ipadress'] != $_SERVER['REMOTE_ADDR'])) {
-            header('Location: login.php?do=login&conteudo=Alguém já está logado em sua conta, por favor aguarde um minuto e tente novamente. Caso isso persista, reporte a alguém da equipe.');
+            header('Location: login.php?do=login&conteudo=Someone is already logged into your account. Please wait a minute and try again. If this persists, report it to a staff member.');
             die();
         }
 

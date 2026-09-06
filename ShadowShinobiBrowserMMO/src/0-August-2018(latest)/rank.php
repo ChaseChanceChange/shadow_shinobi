@@ -15,13 +15,13 @@ if (!in_array($ord, $allowedOrders, true)) {
 
 $page = "
 <table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><center><img src=\"images/rank.gif\" /></center></td></tr></table>
-<center>[ <a href=\"index.php\">Voltar ao Jogo</a> ]</center>
+<center>[ <a href=\"index.php\">Return to Game</a> ]</center>
 
 <br />
 
 <table width=\"100%\" style=\"border: solid 1px black\" cellspacing=\"0\" cellpadding=\"0\">
-<tr><td colspan=\"5\" bgcolor=\"#ffffff\"><center><b>Rank por Level</b></center></td></tr>
-<tr><td><b>Rank</b></td><td><b><a href=\"rank.php?ord=level\" title=\"Ordenar por Level\">Level</a></b></td><td><a href=\"rank.php?ord=attackpower\" title=\"Ordenar por Poder de Ataque\">Poder de Ataque</a></td><td><a href=\"rank.php?ord=defensepower\" title=\"Ordenar por Poder de Defesa\">Poder de Defesa</a></td><td><b>Nome</b></td></tr>
+<tr><td colspan=\"5\" bgcolor=\"#ffffff\"><center><b>Rankings by Standing</b></center></td></tr>
+<tr><td><b>Rank</b></td><td><b><a href=\"rank.php?ord=level\" title=\"Sort by Standing\">Standing</a></b></td><td><a href=\"rank.php?ord=attackpower\" title=\"Sort by Attack Power\">Attack Power</a></td><td><a href=\"rank.php?ord=defensepower\" title=\"Sort by Defense Power\">Defense Power</a></td><td><b>Name</b></td></tr>
 ";
 
 $count = 1;
@@ -38,5 +38,5 @@ while ($usersrow = mysqli_fetch_array($usersquery)) {
 
 $page .= "
 </table>";
-display($page, "Rank por Level", false, false, false);
+display($page, "Rankings by Standing", false, false, false);
 ?>

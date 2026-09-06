@@ -1,6 +1,6 @@
 <?php // explore.php :: Handles all map exploring, chances to fight, etc.
 
-//aumentar np à medida que o personagem anda no mapa.
+// increase NP as the character moves across the map.
 global $userrow;
 $userrow["currentnp"] += 1;
 if ($userrow["currentnp"] > $userrow["maxnp"]){$userrow["currentnp"] = $userrow["maxnp"];}
@@ -55,7 +55,7 @@ function move() {
 
 
 if (!function_exists('andar')){
-function andar($lat, $long) { //move com o script de andar
+function andar($lat, $long) { // moves via the walk/pathing script
     
     global $userrow, $controlrow;
     
@@ -64,7 +64,7 @@ function andar($lat, $long) { //move com o script de andar
     $latitude = $userrow["latitude"];
     $longitude = $userrow["longitude"];
 	
-	//operações pra saber que lado vai
+	// determine which direction to move
 	if ($long == $longitude){$acao = "";}
 	if ($lat == $latitude){$acao = "";}
 	if ($lat < $latitude) {$acao = "south";}
@@ -73,7 +73,7 @@ function andar($lat, $long) { //move com o script de andar
 	if ($long < $longitude){$acao = "weast";}
 	
 	
-	if ($acao == "") { header("Location: ./index.php?conteudo=".utf8_decode('Você chegou em seu destino.').""); die(); }
+	if ($acao == "") { header("Location: ./index.php?conteudo=".utf8_decode('You have arrived at your destination.').""); die(); }
     elseif ($acao == "north") { $latitude++; if ($latitude > $controlrow["gamesize"]) { $latitude = $controlrow["gamesize"]; } }
     elseif ($acao == "south") { $latitude--; if ($latitude < ($controlrow["gamesize"]*-1)) { $latitude = ($controlrow["gamesize"]*-1); } }
     elseif ($acao == "east") { $longitude++; if ($longitude > $controlrow["gamesize"]) { $longitude = $controlrow["gamesize"]; } }
