@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Shadow Shinobi Asset Board</title>
+<style>
+  :root {
+    --bg: #0b0e13;
+    --panel: #151a22;
+    --border: #2a3340;
+    --text: #e9edf4;
+    --muted: #9aa6b5;
+    --accent: #6ec8ff;
+    --ok: #7dcea0;
+    --warn: #e6c07b;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; font-family: system-ui, -apple-system, Segoe UI, sans-serif;
+    background: var(--bg); color: var(--text);
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(11,14,19,.94); border-bottom: 1px solid var(--border);
+    padding: 14px 20px; backdrop-filter: blur(8px);
+  }
+  header h1 { margin: 0 0 6px; font-size: 1.15rem; }
+  header p { margin: 0; color: var(--muted); font-size: .9rem; }
+  .hint {
+    margin-top: 8px; padding: 8px 10px; border-radius: 8px;
+    background: #1a2230; border: 1px solid var(--border); color: var(--warn); font-size: .85rem;
+  }
+  .toolbar {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 12px; align-items: center;
+  }
+  input[type="search"], select, button, textarea, input[type="text"] {
+    background: var(--panel); color: var(--text); border: 1px solid var(--border);
+    border-radius: 8px; padding: 8px 10px; font: inherit;
+  }
+  button { cursor: pointer; }
+  button.primary { border-color: var(--accent); color: var(--accent); }
+  button.ok { border-color: var(--ok); color: var(--ok); }
+  main { padding: 16px 20px 48px; }
+  .stats { color: var(--muted); margin-bottom: 12px; font-size: .9rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 14px; }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    padding: 12px; display: flex; flex-direction: column; gap: 10px;
+  }
+  .card.replace { border-color: #3d6b4f; }
+  .card.keep { border-color: #3a4554; opacity: .85; }
+  .card.ignore { opacity: .45; }
+  .card.verified { box-shadow: inset 0 0 0 1px var(--ok); }
+  .previews {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 8px; min-height: 120px;
+  }
+  .preview-box {
+    background: #0a0d12; border: 1px dashed var(--border); border-radius: 8px;
+    display: flex; align-items: center; justify-content: center; min-height: 130px;
+    position: relative; overflow: hidden;
+  }
+  .preview-box img { max-width: 100%; max-height: 150px; image-rendering: auto; }
+  .preview-box .label {
+    position: absolute; left: 6px; top: 6px; font-size: 10px; color: var(--muted);
+    background: rgba(0,0,0,.55); padding: 2px 6px; border-radius: 4px;
+  }
+  .meta { font-size: .8rem; color: var(--muted); word-break: break-all; }
+  .meta strong { color: var(--text); }
+  .row { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+  .row select, .row input[type="text"] { flex: 1; min-width: 120px; }
+  textarea { width: 100%; min-height: 48px; resize: vertical; }
+  .cand-bar {
+    margin: 0 0 16px; padding: 12px; background: var(--panel);
+    border: 1px solid var(--border); border-radius: 12px;
+  }
+  .cand-strip { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; }
+  .cand-chip {
+    flex: 0 0 auto; width: 92px; text-align: center; cursor: pointer;
+    border: 1px solid var(--border); border-radius: 8px; padding: 6px; background: #0a0d12;
+  }
+  .cand-chip img { max-width: 76px; max-height: 56px; }
+  .cand-chip small {
+    display: block; font-size: 10px; color: var(--muted);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .cand-chip.selected { border-color: var(--accent); }
+  .file-btn {
+    position: relative; overflow: hidden; display: inline-flex; align-items: center;
+  }
+  .file-btn input[type="file"] {
+    position: absolute; inset: 0; opacity: 0; cursor: pointer;
+  }
+  #toast {
+    position: fixed; bottom: 16px; right: 16px; background: #1b2430;
+    border: 1px solid var(--border); padding: 10px 14px; border-radius: 8px;
+    display: none; z-index: 30;
+  }
+  .modal-backdrop {
+    position: fixed; inset: 0; background: rgba(0,0,0,.65); z-index: 40;
+    display: none; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-backdrop.show { display: flex; }
+  .modal {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px;
+    max-width: 960px; width: 100%; max-height: 85vh; overflow: auto; padding: 16px;
+  }
+  .modal h2 { margin: 0 0 10px; font-size: 1.1rem; }
+  .review-row {
+    display: grid; grid-template-columns: 1fr 1fr 1.2fr auto; gap: 10px;
+    align-items: center; border-top: 1px solid var(--border); padding: 10px 0;
+  }
+  .review-row img { max-width: 100%; max-height: 80px; background: #0a0d12; border-radius: 6px; }
+  .review-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Shadow Shinobi Asset Board</h1>
+  <p>Pick a replacement image per asset. Promote keeps the <strong>same legacy filename</strong> (no code path changes).</p>
+  <div class="hint">
+    Candidates are snapshotted when the board is built. After adding files to the candidates folder, rebuild with the same python command.
+    Or use <strong>Browse image…</strong> on any card to pick a file directly (preview + map). Put that file in candidates/ so promote can find it.
+  </div>
+  <div class="toolbar">
+    <input type="search" id="q" placeholder="Filter by path / filename..." />
+    <select id="statusFilter">
+      <option value="">All statuses</option>
+      <option value="unknown">unknown</option>
+      <option value="replace">replace</option>
+      <option value="keep">keep</option>
+      <option value="ignore">ignore</option>
+    </select>
+    <select id="extFilter"><option value="">All types</option></select>
+    <button class="primary" id="btnReview">Review replacements…</button>
+    <button class="ok" id="btnExport">Export verified mapping</button>
+    <button id="btnSaveLocal">Save progress</button>
+    <button id="btnLoadLocal">Load progress</button>
+  </div>
+</header>
+<main>
+  <div class="stats" id="stats"></div>
+  <div class="cand-bar">
+    <div class="meta" style="margin-bottom:8px">
+      <strong>Candidates strip</strong> — click one, then <em>Use selected candidate</em> on a card.
+      Count: <span id="candCount">0</span>
+    </div>
+    <div class="cand-strip" id="candStrip"></div>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+<div id="toast"></div>
+<div class="modal-backdrop" id="reviewModal">
+  <div class="modal">
+    <h2>Verify replacements</h2>
+    <p class="meta">Confirm each pair looks right. Uncheck any you are not ready to export.</p>
+    <div id="reviewList"></div>
+    <div class="review-actions">
+      <button class="ok" id="btnConfirmExport">Export checked only</button>
+      <button id="btnCloseReview">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+window.ASSET_BOARD = __DATA__;
+</script>
+<script>
+(function () {
+  const data = window.ASSET_BOARD;
+  const grid = document.getElementById('grid');
+  const stats = document.getElementById('stats');
+  const candStrip = document.getElementById('candStrip');
+  const toast = document.getElementById('toast');
+  const reviewModal = document.getElementById('reviewModal');
+  let selectedCand = null;
+  const localPreviews = {};
+
+  const extFilter = document.getElementById('extFilter');
+  const exts = [...new Set(data.legacy.map(x => x.ext))].sort();
+  for (const e of exts) {
+    const o = document.createElement('option');
+    o.value = e; o.textContent = e;
+    extFilter.appendChild(o);
+  }
+
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.style.display = 'block';
+    setTimeout(() => toast.style.display = 'none', 2400);
+  }
+
+  function joinCand(filename) {
+    const root = (data.candidate_root || '').replace(/[\\/]+$/, '');
+    if (!root) return filename;
+    const sep = root.indexOf('\\') >= 0 ? '\\' : '/';
+    return root + sep + filename;
+  }
+
+  function renderCandidates() {
+    candStrip.innerHTML = '';
+    document.getElementById('candCount').textContent = String(data.candidates.length);
+    if (!data.candidates.length) {
+      candStrip.innerHTML = '<span class="meta">No candidates in snapshot. Add files to candidates/ then rebuild the board, or use Browse image on a card.</span>';
+      return;
+    }
+    for (const c of data.candidates) {
+      const chip = document.createElement('div');
+      chip.className = 'cand-chip' + (selectedCand && selectedCand.id === c.id ? ' selected' : '');
+      chip.title = c.path;
+      chip.innerHTML = (c.thumb ? '<img src="' + c.thumb + '" alt="">' : '<div class="meta">no preview</div>')
+        + '<small>' + c.filename + '</small>';
+      chip.onclick = () => { selectedCand = c; renderCandidates(); showToast('Selected: ' + c.filename); };
+      candStrip.appendChild(chip);
+    }
+  }
+
+  function filtered() {
+    const q = document.getElementById('q').value.trim().toLowerCase();
+    const st = document.getElementById('statusFilter').value;
+    const ex = document.getElementById('extFilter').value;
+    return data.legacy.filter(item => {
+      if (st && item.status !== st) return false;
+      if (ex && item.ext !== ex) return false;
+      if (q && !(item.display_path.toLowerCase().includes(q) || item.filename.toLowerCase().includes(q))) return false;
+      return true;
+    });
+  }
+
+  function findCand(path) {
+    if (!path) return null;
+    return data.candidates.find(x => x.path === path || x.display_path === path || x.filename === path) || null;
+  }
+
+  function replacementThumb(item) {
+    if (localPreviews[item.id]) return localPreviews[item.id];
+    if (item.replace_preview) return item.replace_preview;
+    const c = findCand(item.replace_with);
+    return c && c.thumb ? c.thumb : null;
+  }
+
+  function render() {
+    const items = filtered();
+    const counts = { unknown:0, replace:0, keep:0, ignore:0 };
+    let verified = 0;
+    data.legacy.forEach(i => {
+      counts[i.status] = (counts[i.status] || 0) + 1;
+      if (i.verified && i.status === 'replace') verified++;
+    });
+    stats.textContent = 'Showing ' + items.length + ' / ' + data.legacy.length
+      + ' | replace:' + (counts.replace || 0)
+      + ' verified:' + verified
+      + ' keep:' + (counts.keep || 0)
+      + ' ignore:' + (counts.ignore || 0)
+      + ' unknown:' + (counts.unknown || 0);
+
+    grid.innerHTML = '';
+    for (const item of items) {
+      const card = document.createElement('article');
+      card.className = 'card ' + (item.status || 'unknown') + (item.verified ? ' verified' : '');
+      const repThumb = replacementThumb(item);
+      card.innerHTML =
+        '<div class="previews">'
+        + '<div class="preview-box"><span class="label">LEGACY</span>'
+        + (item.thumb ? '<img src="' + item.thumb + '" alt="">' : '<span class="meta">no embed<br>' + item.bytes + ' bytes</span>')
+        + '</div>'
+        + '<div class="preview-box"><span class="label">REPLACEMENT</span>'
+        + (repThumb ? '<img src="' + repThumb + '" alt="">' : (item.replace_with ? '<span class="meta">' + item.replace_with + '</span>' : '<span class="meta">none yet</span>'))
+        + '</div></div>'
+        + '<div class="meta"><strong>' + item.filename + '</strong><br>' + item.display_path + '<br>'
+        + item.bytes + ' bytes · ' + item.ext + '</div>'
+        + '<div class="row">'
+        + '<select data-k="status">'
+        + '<option value="unknown">unknown</option>'
+        + '<option value="replace">replace</option>'
+        + '<option value="keep">keep</option>'
+        + '<option value="ignore">ignore</option>'
+        + '</select>'
+        + '<button type="button" data-act="use-cand">Use selected candidate</button>'
+        + '</div>'
+        + '<div class="row">'
+        + '<label class="file-btn"><button type="button">Browse image…</button>'
+        + '<input type="file" accept="image/*" data-act="browse" /></label>'
+        + '<button type="button" data-act="verify">' + (item.verified ? 'Verified ✓' : 'Mark verified') + '</button>'
+        + '<button type="button" data-act="clear">Clear</button>'
+        + '</div>'
+        + '<div class="row">'
+        + '<input type="text" data-k="replace_with" placeholder="Replacement full path (auto-filled)" />'
+        + '</div>'
+        + '<textarea data-k="notes" placeholder="Notes..."></textarea>';
+
+      card.querySelector('[data-k="status"]').value = item.status || 'unknown';
+      card.querySelector('[data-k="replace_with"]').value = item.replace_with || '';
+      card.querySelector('[data-k="notes"]').value = item.notes || '';
+
+      card.querySelector('[data-k="status"]').onchange = (e) => {
+        item.status = e.target.value;
+        if (item.status !== 'replace') item.verified = false;
+        render();
+      };
+      card.querySelector('[data-k="replace_with"]').onchange = (e) => {
+        item.replace_with = e.target.value.trim();
+        if (item.replace_with) item.status = 'replace';
+        item.verified = false;
+        render();
+      };
+      card.querySelector('[data-k="notes"]').onchange = (e) => { item.notes = e.target.value; };
+
+      card.querySelector('[data-act="use-cand"]').onclick = () => {
+        if (!selectedCand) { showToast('Select a candidate in the top strip first'); return; }
+        item.replace_with = selectedCand.path;
+        item.replace_preview = selectedCand.thumb || '';
+        item.status = 'replace';
+        item.verified = false;
+        delete localPreviews[item.id];
+        render();
+      };
+
+      card.querySelector('[data-act="browse"]').onchange = (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = () => {
+          localPreviews[item.id] = reader.result;
+          item.replace_preview = reader.result;
+          item.replace_with = joinCand(file.name);
+          item.status = 'replace';
+          item.verified = false;
+          item.notes = (item.notes ? item.notes + ' | ' : '') + 'picked file: ' + file.name;
+          render();
+          showToast('Mapped to candidates path: ' + item.replace_with + ' (ensure file is there before promote)');
+        };
+        reader.readAsDataURL(file);
+      };
+
+      card.querySelector('[data-act="verify"]').onclick = () => {
+        if (!item.replace_with) { showToast('Choose a replacement first'); return; }
+        item.status = 'replace';
+        item.verified = !item.verified;
+        render();
+      };
+
+      card.querySelector('[data-act="clear"]').onclick = () => {
+        item.replace_with = '';
+        item.replace_preview = '';
+        item.verified = false;
+        delete localPreviews[item.id];
+        if (item.status === 'replace') item.status = 'unknown';
+        render();
+      };
+
+      grid.appendChild(card);
+    }
+  }
+
+  function mappings(onlyVerified) {
+    return data.legacy
+      .filter(i => i.status === 'replace' && i.replace_with && (!onlyVerified || i.verified))
+      .map(i => ({
+        legacy_path: i.legacy_path,
+        display_path: i.display_path,
+        filename: i.filename,
+        replace_with: i.replace_with,
+        notes: i.notes,
+        verified: !!i.verified,
+      }));
+  }
+
+  function downloadMapping(list, name) {
+    const blob = new Blob([JSON.stringify({ mappings: list }, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    a.click();
+  }
+
+  document.getElementById('btnReview').onclick = () => {
+    const list = mappings(false);
+    const box = document.getElementById('reviewList');
+    box.innerHTML = '';
+    if (!list.length) {
+      box.innerHTML = '<p class="meta">No replacements marked yet.</p>';
+    } else {
+      for (const m of list) {
+        const item = data.legacy.find(x => x.legacy_path === m.legacy_path);
+        const row = document.createElement('div');
+        row.className = 'review-row';
+        const left = item && item.thumb ? '<img src="' + item.thumb + '" alt="">' : '<span class="meta">legacy</span>';
+        const right = replacementThumb(item) ? '<img src="' + replacementThumb(item) + '" alt="">' : '<span class="meta">replacement</span>';
+        row.innerHTML =
+          left + right
+          + '<div class="meta"><strong>' + m.filename + '</strong><br>' + m.display_path
+          + '<br>→ ' + m.replace_with + '</div>'
+          + '<label class="meta"><input type="checkbox" data-path="' + m.legacy_path.replace(/"/g, '&quot;') + '" '
+          + (item && item.verified ? 'checked' : '') + '> export</label>';
+        box.appendChild(row);
+      }
+    }
+    reviewModal.classList.add('show');
+  };
+
+  document.getElementById('btnCloseReview').onclick = () => reviewModal.classList.remove('show');
+
+  document.getElementById('btnConfirmExport').onclick = () => {
+    const checks = [...document.querySelectorAll('#reviewList input[type=checkbox]')];
+    const allowed = new Set(checks.filter(c => c.checked).map(c => c.getAttribute('data-path')));
+    for (const item of data.legacy) {
+      if (item.status === 'replace' && item.replace_with) {
+        item.verified = allowed.has(item.legacy_path);
+      }
+    }
+    const list = mappings(true);
+    downloadMapping(list, 'asset-replacements.json');
+    showToast('Exported ' + list.length + ' verified replacements');
+    reviewModal.classList.remove('show');
+    render();
+  };
+
+  document.getElementById('btnExport').onclick = () => {
+    const list = mappings(true);
+    if (!list.length) {
+      showToast('No verified replacements. Use Review or Mark verified first.');
+      return;
+    }
+    downloadMapping(list, 'asset-replacements.json');
+    showToast('Exported ' + list.length + ' verified replacements');
+  };
+
+  document.getElementById('btnSaveLocal').onclick = () => {
+    localStorage.setItem('ss_asset_board_progress', JSON.stringify(data.legacy.map(i => ({
+      id: i.id, status: i.status, replace_with: i.replace_with, notes: i.notes, verified: !!i.verified
+    }))));
+    showToast('Saved progress in this browser');
+  };
+  document.getElementById('btnLoadLocal').onclick = () => {
+    const raw = localStorage.getItem('ss_asset_board_progress');
+    if (!raw) { showToast('No saved progress'); return; }
+    const rows = JSON.parse(raw);
+    const byId = Object.fromEntries(rows.map(r => [r.id, r]));
+    for (const item of data.legacy) {
+      const r = byId[item.id];
+      if (!r) continue;
+      item.status = r.status || item.status;
+      item.replace_with = r.replace_with || '';
+      item.notes = r.notes || '';
+      item.verified = !!r.verified;
+    }
+    render();
+    showToast('Loaded progress');
+  };
+
+  document.getElementById('q').oninput = render;
+  document.getElementById('statusFilter').onchange = render;
+  document.getElementById('extFilter').onchange = render;
+
+  renderCandidates();
+  render();
+})();
+</script>
+</body>
+</html>
