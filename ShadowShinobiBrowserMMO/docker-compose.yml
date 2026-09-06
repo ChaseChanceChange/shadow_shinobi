@@ -39,6 +39,8 @@ services:
     volumes:
       - shadow-db:/var/lib/mysql
       - ./database (sql)/shadow_shinobi.sql:/docker-entrypoint-initdb.d/01-shadow.sql:ro
+      - ./database (sql)/migrations/001_shadow_identity.sql:/docker-entrypoint-initdb.d/02-shadow-001.sql:ro
+      - ./database (sql)/migrations/002_shadow_content_cleanup.sql:/docker-entrypoint-initdb.d/03-shadow-002.sql:ro
   db-admin:
     image: phpmyadmin:5-apache
     depends_on:
