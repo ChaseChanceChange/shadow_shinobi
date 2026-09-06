@@ -11,15 +11,15 @@ for ($i = 1; $i < 5; $i ++) {
         if ($varbackpack[$i][3] == "X") {$varbackpack[$i][3] = "*";}
         $varbackpack[$i][0] = conteudoexplic($varbackpack[$i][1], $varbackpack[$i][2], 'bp'.$i.'atr', $varbackpack[$i][3]);
         if (!is_numeric($varbackpack[$i][1])) {$varbackpack[$i][1] .= $varbackpack[$i][2]; $pastadoslot = "";}
-        $bpcodigo[$i] = "<a href=\"backpack.php?qual=$i\"><img src=\"layoutnovo/equipamentos/$pastadoslot".$varbackpack[$i][1].".gif\" width=\"34\" height=\"34\" alt=\"Backpack item $i\" onmouseover=\"".$varbackpack[$i][0]."\" onmouseout=\"fecharexplic();\" id=\"bp".$i."atr\"/></a>";
+        $bpcodigo[$i] = "<a href=\"backpack.php?qual=$i\"><img src=\"layoutnovo/equipamentos/$pastadoslot".$varbackpack[$i][1].".gif\" width=\"34\" height=\"34\" alt=\"Pack item $i\" onmouseover=\"".$varbackpack[$i][0]."\" onmouseout=\"fecharexplic();\" id=\"bp".$i."atr\"/></a>";
     } else {
-        $bpcodigo[$i] = "<img src=\"images/gif.gif\" width=\"34\" height=\"34\" alt=\"Empty backpack slot\"/>";
+        $bpcodigo[$i] = "<img src=\"images/gif.gif\" width=\"34\" height=\"34\" alt=\"Empty Pack slot\"/>";
     }
 }
 
 $jutsudebuscahtml = "";
 if (($userrow['jutsudebuscahtml'] ?? 0) == 1) {
-    $jutsudebuscahtml = "<a href=\"mainmsg.php?do2=usarjutsubusca\" class=\"ss-side-link\" title=\"Jutsu Ocular\">Search Technique</a>";
+    $jutsudebuscahtml = "<a href=\"mainmsg.php?do2=usarjutsubusca\" class=\"ss-side-link\" title=\"Search Art\">Search Art</a>";
 }
 
 $durabm = explode(",", (string)($userrow["durabilidade"] ?? ""));
@@ -29,18 +29,18 @@ for ($i = 1; $i < 7; $i ++) {
 }
 
 if (($userrow["magiclist"] ?? "") == "" || ($userrow["magiclist"] ?? "") == "None") {
-    $userrow["magiclist"] = "Nenhum Jutsu.";
+    $userrow["magiclist"] = "No Arts.";
 }
 
 $olhosenjutsu = "";
 $senjutsuhtml = $userrow["senjutsuhtml"] ?? "";
 if ($senjutsuhtml == "fechado") {
-    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=usar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Activate Senjutsu\" title=\"Ativar Senjutsu (1NP/3s)\"></a>";
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=usar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Activate Essence Sight\" title=\"Activate Essence Sight (1NP/3s)\"></a>";
 } elseif ($senjutsuhtml == "senjutsu") {
     include('funcoesinclusas.php');
     senjutsu();
-    if (($userrow["currentnp"] ?? 0) == 0) {$titulo = "Ativar Senjutsu (1NP/3s)";} else {$titulo = "Desativar Senjutsu";}
-    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=cancelar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Senjutsu\" title=\"$titulo\"></a>";
+    if (($userrow["currentnp"] ?? 0) == 0) {$titulo = "Activate Essence Sight (1NP/3s)";} else {$titulo = "Deactivate Essence Sight";}
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=cancelar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Essence Sight\" title=\"$titulo\"></a>";
 }
 
 $armaatr = conteudoexplic($userrow["weaponid"], '1', 'armaatr', $durabm[1] ?? '*');
@@ -62,7 +62,7 @@ $porcconcluida = $xpproxlvl > 0 ? floor((($userrow['experience'] - $xpCurrent) *
 $porcconcluida = max(0, min(100, $porcconcluida));
 $quantofaltaxp = max(0, $xpproxlvl - ($userrow['experience'] - $xpCurrent));
 $widthbar = round((155 * $porcconcluida)/100);
-$barrahtml = "<div class=\"ss-levelbar\" onmouseover=\"explicdrop('qualquer', 'Dados do Level', 'XP Atual: ".$userrow['experience']."<br>XP P/ Lvl Up: ".$quantofaltaxp."<br>Porc. Conclu&iacute;da: ".$porcconcluida."%','1','1');\" onmouseout=\"fecharexplic();\"><div class=\"ss-levelbar__fill\" style=\"width:{$widthbar}px\"><img src=\"images/levelbarin.jpg\" width=\"$widthbar\" height=\"36\" alt=\"\"></div><img class=\"ss-levelbar__frame\" src=\"images/levelbar.png\" id=\"qualquer\" alt=\"Level {$userrow['level']}\"><span class=\"ss-levelbar__level\">".$userrow['level']."</span></div>";
+$barrahtml = "<div class=\"ss-levelbar\" onmouseover=\"explicdrop('qualquer', 'Standing Details', 'Current Insight: ".$userrow['experience']."<br>Insight P/ Standing Up: ".$quantofaltaxp."<br>Completion: ".$porcconcluida."%','1','1');\" onmouseout=\"fecharexplic();\"><div class=\"ss-levelbar__fill\" style=\"width:{$widthbar}px\"><img src=\"images/levelbarin.jpg\" width=\"$widthbar\" height=\"36\" alt=\"\"></div><img class=\"ss-levelbar__frame\" src=\"images/levelbar.png\" id=\"qualquer\" alt=\"Standing {$userrow['level']}\"><span class=\"ss-levelbar__level\">".$userrow['level']."</span></div>";
 
 $segundaarmaimagem = '';
 if (file_exists('layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif')) {
@@ -70,22 +70,22 @@ if (file_exists('layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif')) {
 }
 
 $template = <<<THEVERYENDOFYOU
-<aside class="ss-sidebar" aria-label="Player status and equipment">
+<aside class="ss-sidebar" aria-label="Operative status and gear">
   <section class="ss-side-card ss-player-card">
-    <div class="ss-side-card__header"><span class="ss-eyebrow">PLAYER</span><h2>{{charname}}</h2></div>
-    <div class="ss-player-card__avatar"><a href="outros.php?do=avatar"><img src="layoutnovo/avatares/{{avatar}}.jpg" alt="Choose avatar" title="Selecionar Avatar"></a>$olhosenjutsu</div>
+    <div class="ss-side-card__header"><span class="ss-eyebrow">OPERATIVE</span><h2>{{charname}}</h2></div>
+    <div class="ss-player-card__avatar"><a href="outros.php?do=avatar"><img src="layoutnovo/avatares/{{avatar}}.jpg" alt="Choose avatar" title="Choose Avatar"></a>$olhosenjutsu</div>
     $barrahtml
-    <div class="ss-statbars" title="Player status">{{statbars}}</div>
+    <div class="ss-statbars" title="Operative status">{{statbars}}</div>
     <nav class="ss-side-nav">
-      <a href="javascript:mostrarchar('{{charname}}')">Character sheet</a>
+      <a href="javascript:mostrarchar('{{charname}}')">Operative Record</a>
       <a href="outroseatributos.php?do=atributos">Attributes</a>
-      <a href="treinamentoequests.php?do=quests">Missions</a>
-      <a href="treinamentoequests.php?do=treinamento">Training</a>
+      <a href="treinamentoequests.php?do=quests">Contracts</a>
+      <a href="treinamentoequests.php?do=treinamento">Discipline</a>
     </nav>
   </section>
 
   <section class="ss-side-card">
-    <div class="ss-side-card__header"><span class="ss-eyebrow">LOADOUT</span><h2>Equipment</h2></div>
+    <div class="ss-side-card__header"><span class="ss-eyebrow">LOADOUT</span><h2>Gear</h2></div>
     <div class="ss-equipment-grid">
       <div class="ss-equipment-slot ss-equipment-slot--shield"><a href="desequipar.php?qual=3"><img src="layoutnovo/equipamentos/{{shieldid}}.gif" alt="{{shieldname}}" onmouseover="$shieldatr" onmouseout="fecharexplic();" id="shieldatr"></a></div>
       <div class="ss-equipment-slot ss-equipment-slot--weapon"><a href="desequipar.php?qual=1"><img src="layoutnovo/equipamentos/{{weaponid}}.gif" alt="{{weaponname}}" onmouseover="$armaatr" onmouseout="fecharexplic();" id="armaatr"></a></div>
@@ -108,14 +108,14 @@ $template = <<<THEVERYENDOFYOU
   </section>
 
   <section class="ss-side-card">
-    <div class="ss-side-card__header"><span class="ss-eyebrow">INVENTORY</span><h2>Backpack</h2></div>
-    <a class="ss-backpack__image" href="backpack.php"><img src="images/{{bpimagem}}.jpg" alt="Open backpack"></a>
+    <div class="ss-side-card__header"><span class="ss-eyebrow">INVENTORY</span><h2>Pack</h2></div>
+    <a class="ss-backpack__image" href="backpack.php"><img src="images/{{bpimagem}}.jpg" alt="Open Pack"></a>
     <div class="ss-backpack__slots">$bpcodigo[1]$bpcodigo[2]$bpcodigo[3]$bpcodigo[4]</div>
   </section>
 
   <section class="ss-side-card">
-    <div class="ss-side-card__header"><span class="ss-eyebrow">ABILITIES</span><h2>Techniques</h2></div>
-    <div class="ss-technique-icon"><img src="layoutnovo/menuslados/jutsu.png" alt="Techniques"></div>
+    <div class="ss-side-card__header"><span class="ss-eyebrow">ARTS</span><h2>Arts</h2></div>
+    <div class="ss-technique-icon"><img src="layoutnovo/menuslados/jutsu.png" alt="Arts"></div>
     $jutsudebuscahtml
     <div class="ss-technique-list">{{magiclist}}</div>
   </section>

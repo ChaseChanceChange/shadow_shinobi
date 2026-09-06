@@ -3,9 +3,9 @@ $nomedochar = isset($_GET['nomedochar']) ? (string) $_GET['nomedochar'] : '';
 $template = <<<THEVERYENDOFYOU
 <section class="ss-card ss-action-card">
   <div class="ss-action-card__header">
-    <span class="ss-eyebrow">PLAYER VERSUS PLAYER</span>
-    <h2>Challenge a shinobi</h2>
-    <p>Enter the character name to start a duel using the existing battle system.</p>
+    <span class="ss-eyebrow">OPERATIVE CHALLENGE</span>
+    <h2>Challenge an Operative</h2>
+    <p>Enter the operative name to begin a Challenge using the existing combat system.</p>
   </div>
   <form action="users.php?do=batalha1" method="post" class="ss-action-card__form">
     <label for="duel-player">Opponent name</label>

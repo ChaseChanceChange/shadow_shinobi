@@ -1,279 +1,203 @@
-<?php // enche o hp.
-
-
+<?php
+// Search Art compatibility route. The legacy URL and persistent field names remain for engine compatibility.
 
 include('lib.php');
 $link = opendb();
-
 include('cookies.php');
 $userrow = checkcookies();
 
-
-
-if (isset($_GET["do"])) {
-    
-    $do = $_GET["do"];
-    if ($do == "jutsu") { jutsu(); }
-	elseif ($do == "aprendendo2") { aprendendo2(); }
-	elseif ($do == "usar") {unset($_GET["do"]); usar(); }
-	}
-
-
-
-
-
-function jutsu() {
-global $userrow;
-global $topvar;
-$topvar = true;
-if ($userrow == false) { display("Por favor fa�a o <a href=\"login.php?do=login\">log in</a> no jogo antes de executar essa a��o.","Erro",false,false,false);
-		die(); }
-				if ($userrow["currentaction"] == "Fighting") {header('Location: ./index.php?do=fight&conteudo=Voc� n�o pode acessar essa fun��o no meio de uma batalha!');die(); }
-			if ($userrow["batalha_timer2"] == 5) {global $topvar;
-$topvar = true; display("Voc� n�o pode fazer nenhum movimento enquanto estiver em um duelo. Clique <a href=\"users.php?do=resetarduelo\">aqui</a>, para resetar seu Duelo atual. ","Erro",false,false,false);die(); }
-
-$longitude = $userrow["longitude"];
-$latitude = $userrow["latitude"];
-
-
-$townquery = doquery("SELECT * FROM {{table}} WHERE latitude='".$userrow["latitude"]."' AND longitude='".$userrow["longitude"]."' LIMIT 1", "towns");
-if (mysqli_num_rows($townquery) == 0) { display("H� um erro com sua conta, ou com os dados da cidade. Por favor tente novamente.","Error"); die();}
-    $townrow = mysqli_fetch_array($townquery);
-if ($townrow["id"] != 5) {header('Location: ./index.php?conteudo=Voc� n�o pode usar essa fun��o fora da Vila da Areia.');die(); }
-
-
-$townrow["kage"] = "Kazekage";
-$townrow["id"] = 5;
- $conteudodois = " 
-
- Ol� pequeno ninja, voc� veio at� mim � procura do Jutsu de Busca? O Jutsu de busca � um jutsu que precisa ser treinado 10 vezes em intervalos de duas horas � cada treinamento, para ent�o ser aperfei�oado. A finalidade do Jutsu � revelar as coordenadas do jogador que voc� est� procurando e informar se ele est� online ou n�o.<br>
- Se voc� ainda quer obter esse jutsu, podemos <a href=\"jutsudebusca.php?do=aprendendo2&inicio=true\">come�ar agora mesmo</a> o treinamento do Jutsu de Busca.
-
-";
-include('funcoesinclusas.php');
-personagemmissao($conteudodois, $townrow);
-die();
-
+if (isset($_GET['do'])) {
+    switch ($_GET['do']) {
+        case 'jutsu':
+            searchArtInfo();
+            break;
+        case 'aprendendo2':
+            developSearchArt();
+            break;
+        case 'usar':
+            useSearchArt();
+            break;
+    }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-function aprendendo2(){
-$inicio = $_GET['inicio'];
-global $topvar;
-global $userrow;
-$topvar = true;
-    /* testando se est� logado */
-		//include('cookies.php');
-		//$userrow = checkcookies();
-	
-		if ($userrow == false) { display("Por favor fa�a o <a href=\"login.php?do=login\">log in</a> no jogo antes de executar essa a��o.","Erro",false,false,false);
-		die(); }
-				if ($userrow["currentaction"] == "Fighting") {header('Location: ./index.php?do=fight&conteudo=Voc� n�o pode acessar essa fun��o no meio de uma batalha!');die(); }
-				if ($userrow["batalha_timer2"] == 5) {global $topvar;
-$topvar = true; display("Voc� n�o pode fazer nenhum movimento enquanto estiver em um duelo. Clique <a href=\"users.php?do=resetarduelo\">aqui</a>, para resetar seu Duelo atual. ","Erro",false,false,false);die(); }
-
-$longitude = $userrow["longitude"];
-$latitude = $userrow["latitude"];
-
-$townquery = doquery("SELECT * FROM {{table}} WHERE latitude='".$userrow["latitude"]."' AND longitude='".$userrow["longitude"]."' LIMIT 1", "towns");
-if (mysqli_num_rows($townquery) == 0) { display("H� um erro com sua conta, ou com os dados da cidade. Por favor tente novamente.","Error"); die();}
-    $townrow = mysqli_fetch_array($townquery);
-if ($townrow["id"] != 5) {header('Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� n�o pode treinar esse Jutsu fora da Vila da Areia.');die(); }
-
-
-
-//fun��o se passou o tempo necess�rio ou n�o.
-$today = date("j/n/Y");
-$todayhour = date("H:i:s");
-$nomedojutsu = "Jutsu de Busca"; //nome do jutsu pra buscar.
-$tempoprapassar = 120; //tempo em minutos
-//colocando o jutsu no campo, nome, quantos ainda tem q treinar, treinar ao total, dia e hora do ultimo treino, tempo pra passar em minutos. A HORA � - 2 DA HORA DO BRASIL.
-if ($userrow["treinamento"] != "None"){
-	$treinos = explode(";",$userrow["treinamento"]);
-	for($i = 0; $i < (count($treinos) - 1); $i++){// 
-		$subtreinos = explode(",",$treinos[$i]);
-		if ($subtreinos[0] == $nomedojutsu){
-					//�rea die.
-					if ($inicio == true){header("Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� j� possui o(a) ".$nomedojutsu." na sua lista de treinamento.");die();}
-					if ($subtreinos[1] == $subtreinos[2]){header("Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� j� completou o treinamento do(a) ".$nomedojutsu.".");die();}
-					include('funcoesinclusas.php');
-					$retorno = tempojutsu($subtreinos[3], $subtreinos[4], $subtreinos[5]);
-					if ($retorno != "ok"){header("Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� ainda n�o pode treinar, � preciso aguardar ".$retorno." minuto(s) at� que voc� possa treinar o(a) ".$nomedojutsu." novamente.");die();}
-					//fim area die.
-			$i = count($treinos);
-			$achou = true;
-			//colocando tudo no lugar:
-			$userrow["treinamento"] = "";
-			for($j = 0; $j < (count($treinos) - 1); $j++){
-				$subtreinos2 = explode(",",$treinos[$j]);
-				if ($subtreinos2[0] != $nomedojutsu){
-					$userrow["treinamento"] .= $treinos[$j].";";
-				}else{//se for igual o nome da busca do jutsu
-					$subtreinos2[1] += 1;
-					$userrow["treinamento"] .= $subtreinos2[0].",".$subtreinos2[1].",".$subtreinos2[2].",".$today.",".$todayhour.",".$tempoprapassar.";";
-					$valor1 = $subtreinos2[1];
-					$valor2 = $subtreinos2[2];
-				}//fim segundo if
-			}//fim segundo for
-			
-			
-		}//fimif
-	}//fimfor
-	
-	if ($achou != true){//adicionando se nao for encontrado
-		$userrow["treinamento"] .= $nomedojutsu.",0,10,".$today.",".$todayhour.",0;";
-		$updatequery = doquery("UPDATE {{table}} SET treinamento='".$userrow["treinamento"]."' WHERE charname='".$userrow["charname"]."' LIMIT 1","users");
-		header("Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� adicionou o(a) ".$nomedojutsu." � sua tabela de treinamentos.");die(); 
-	}else{//se for conclu�do ent�o
-	
-	
-		//se o jutsu for conclu�do
-		if (($valor1 >= $valor2) && ($achou = true)){
-			$subtrienos2[1] = $subtrienos2[2]; //pra n�o ficar um maior que o outro.
-				//o que ganha no jutsu:
-				$jutsufinal = 1;
-$updatequery = doquery("UPDATE {{table}} SET jutsudebuscahtml='$jutsufinal' WHERE charname='".$userrow['charname']."' LIMIT 1","users");				//fim do que ganha.
-		$updatequery = doquery("UPDATE {{table}} SET treinamento='".$userrow["treinamento"]."' WHERE charname='".$userrow["charname"]."' LIMIT 1","users");	
-			header("Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� completou o treinamento do(a) ".$nomedojutsu.". Parab�ns!");die(); 
-			
-		}else{//treinou e n�o completou o jutsu.
-		$updatequery = doquery("UPDATE {{table}} SET treinamento='".$userrow["treinamento"]."' WHERE charname='".$userrow["charname"]."' LIMIT 1","users");	
-			header("Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� treinou o(a) ".$nomedojutsu.". Voc� poder� treinar novamente dentro de ".$tempoprapassar." minutos.");die();		
-		}//fim else		
-		
-		
-		
-		}//fim do else
-	
-	
-	
-		
-
-
-}else{$userrow["treinamento"] = $nomedojutsu.",0,10,".$today.",".$todayhour.",0;";
-$updatequery = doquery("UPDATE {{table}} SET treinamento='".$userrow["treinamento"]."' WHERE charname='".$userrow["charname"]."' LIMIT 1","users");
-header("Location: ./treinamentoequests.php?do=treinamento&conteudo=Voc� adicionou o(a) ".$nomedojutsu." a sua tabela de treinamentos.");die(); }
-
-
-
-
-			//atualizar
-		$updatequery = doquery("UPDATE {{table}} SET treinamento='".$userrow["treinamento"]."' WHERE charname='".$userrow["charname"]."' LIMIT 1","users");	
-			
-				
-
-
-
-    
+function ssSearchArtRedirect(string $message, string $route = 'index.php'): void {
+    $query = http_build_query(['conteudo' => $message], '', '&', PHP_QUERY_RFC3986);
+    header('Location: ' . $route . ($query !== '' ? '?' . $query : ''));
+    die();
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-function usar(){
-global $topvar;
-global $userrow;
-$topvar = true;
-global $valorlib, $indexconteudo, $controlrow;
-
-    /* testando se est� logado */
-		//include('cookies.php');
-		//$userrow = checkcookies();
-	
-		if ($userrow == false) { display("Por favor fa�a o <a href=\"login.php?do=login\">log in</a> no jogo antes de executar essa a��o.","Erro",false,false,false);
-		die(); }
-				if ($userrow["currentaction"] == "Fighting") {header('Location: ./index.php?do=fight&conteudo=Voc� n�o pode acessar essa fun��o no meio de uma batalha!'); die(); }
-				if ($userrow["batalha_timer2"] == 5) {global $topvar;
-$topvar = true; display("Voc� n�o pode fazer nenhum movimento enquanto estiver em um duelo. Clique <a href=\"users.php?do=resetarduelo\">aqui</a>, para resetar seu Duelo atual. ","Erro",false,false,false);die(); }
-
-if ($userrow["jutsudebuscahtml"] == 0) {header("Location: ./index.php?conteudo=Voc� n�o pode usar esse jutsu sem ter treinado!");die();}
-
-
-if (isset($_POST["submit"])) {
-        extract($_POST);
-				
-			//dados do jogador da procura	
-			$userquery = doquery("SELECT * FROM {{table}} WHERE charname='$nomedaprocura' LIMIT 1","users");
-			if (mysqli_num_rows($userquery) != 1) {header("Location: ./index.php?conteudo=N�o existe nenhuma conta com esse Nome.");die();}
-			$userpara = mysqli_fetch_array($userquery);
-			
-			
-			$mp = $userrow["currentmp"];
-			$usuariologadonome = $userrow["charname"];
-			
-			$pagina = "";
-			if ($mp < 30) {$pagina = "Esse jutsu requer 30 de Chakra para ser usado.";}
-			$mpquesobrou = $mp - 30;
-			
-			if ($pagina == "") {
-			$updatequery = doquery("UPDATE {{table}} SET currentmp='$mpquesobrou' WHERE charname='$usuariologadonome' LIMIT 1","users");
-			if ($userpara["longitude"] > 0) {$userpara["longitude"] .= "E";}
-			if ($userpara["latitude"] > 0) {$userpara["latitude"] .= "N";}
-			if ($userpara["longitude"] < 0) {$userpara["longitude"] *= -1; $userpara["longitude"] .= "W";}
-			if ($userpara["latitude"] < 0) {$userpara["latitude"] *= -1; $userpara["latitude"] .= "S";}
-			$pagina = "O jogador ".$userpara["charname"]." est� na coordenada: ".$userpara["latitude"].", ".$userpara["longitude"].".";
-			
-			//jogadores online:
-				$usersqueryd = doquery("SELECT * FROM {{table}} WHERE UNIX_TIMESTAMP(onlinetime) >= '".(time()-61)."' AND charname='$nomedaprocura' LIMIT 1", "users");
-			if (mysqli_num_rows($usersqueryd) != 1) {$pagina = $pagina."<br>Este jogador est� <font color=red>Offline</font>. ";
-			$pagina .= "<a href=\"javascript: openmappopup('".$userpara["latitude"]."/".$userpara["longitude"]."')\"><img src=\"images/maximizar.gif\" border=\"0\" title=\"Mostrar Localiza��o no Mapa\"></a>";
-			}
-			else{$pagina = $pagina."<br>Este jogador est� <font color=green>Online</font>.";}
-			
-			}//fim if
-			
-			
-
-			 
-	$indexconteudo = "<center>".$pagina."</center>";
-	$valorlib = 1; //para nao repetir o lib.php
-	$indexconteudo = "<center><table  bgcolor=\"#452202\"><tr><td width=\"18\"></td><td width=\"*\"><center><font color=white>Jutsu de Busca</font></center></td><td width=\"18\"><a href=\"index.php\"><img src=\"images/deletar2.jpg\" title=\"Fechar\"  alt=\"X\" border=\"0\"></a></td></tr><tr><td background=\"layoutnovo/menumeio/meio2.png\" colspan=\"3\"><font color=\"black\"><center>".$indexconteudo."</center></font></td></tr></table></center>";
-	include('index.php');
-	die();
-			 
+function ssRequireFieldAccess(): void {
+    global $userrow;
+    if ($userrow === false) {
+        ssSearchArtRedirect('Please log in before using the Search Art.');
+    }
+    if (($userrow['currentaction'] ?? '') === 'Fighting') {
+        ssSearchArtRedirect('You cannot use this system during combat.', 'index.php?do=fight');
+    }
+    if (($userrow['batalha_timer2'] ?? 0) == 5) {
+        ssSearchArtRedirect('You cannot change actions while a duel is active.');
+    }
 }
 
-	$nomebotao = "botaobusca";
-    $indexconteudo = "<center><form action=\"jutsudebusca.php?do=usar\" method=\"post\">
-Qual jogador voc� quer procurar? CH: 30.<br><input type=\"submit\" id=\"$nomebotao\" name=\"submit\" value=\"\" style=\"height:5px;\"><br>
-Nome do Jogador:<br> <input type=\"text\" name=\"nomedaprocura\">
-
-</form></center><script type=\"text/javascript\" language=\"JavaScript\">sumirbotao('".$nomebotao."');sumirbotao('".$nomebotao."');</script>";
-	$valorlib = 1; //para nao repetir o lib.php
-	$indexconteudo = "<center><table  bgcolor=\"#452202\"><tr><td width=\"18\"></td><td width=\"*\"><center><font color=white>Jutsu de Busca</font></center></td><td width=\"18\"><a href=\"index.php\"><img src=\"images/deletar2.jpg\" title=\"Fechar\"  alt=\"X\" border=\"0\"></a></td></tr><tr><td background=\"layoutnovo/menumeio/meio2.png\" colspan=\"3\"><font color=\"black\"><center>".$indexconteudo."</center></font></td></tr></table></center>";
-	include('index.php');
-	die();
-
+function ssSearchArtIsDeveloped(): bool {
+    global $userrow;
+    return (string)($userrow['jutsudebuscahtml'] ?? '0') === '1';
 }
 
+function searchArtInfo(): void {
+    ssRequireFieldAccess();
+    global $userrow;
 
+    $page = '<section class="ss-card ss-codex">'
+        . '<div class="ss-action-card__header"><span class="ss-eyebrow">FIELD ART</span>'
+        . '<h2>Search Art</h2>'
+        . '<p>A trained perception discipline that reveals an operative\'s last known coordinates and online state.</p></div>'
+        . '<div class="ss-detail-grid">'
+        . '<div><span>Training</span>10 development sessions</div>'
+        . '<div><span>Cooldown</span>120 minutes between sessions</div>'
+        . '<div><span>Use cost</span>30 Essence</div>'
+        . '<div><span>Function</span>Locate an operative by name</div>'
+        . '</div>';
 
+    if (ssSearchArtIsDeveloped()) {
+        $page .= '<p class="ss-message"><strong>Search Art is active.</strong> Enter an operative name to locate them.</p>'
+            . '<a class="ss-side-action" href="jutsudebusca.php?do=usar">Use Search Art</a>';
+    } else {
+        $page .= '<p class="ss-message">Search Art has not been developed yet.</p>'
+            . '<a class="ss-side-action" href="jutsudebusca.php?do=aprendendo2&inicio=true">Begin development</a>';
+    }
 
+    display($page, 'Search Art', false, false, false);
+}
 
+function developSearchArt(): void {
+    ssRequireFieldAccess();
+    global $userrow;
 
+    $today = date('j/n/Y');
+    $todayHour = date('H:i:s');
+    $trainingKey = 'Search Art';
+    $legacyKey = 'Jutsu de Busca';
+    $totalSessions = 10;
+    $cooldownMinutes = 120;
+    $start = isset($_GET['inicio']) && $_GET['inicio'] === 'true';
 
+    $training = (string)($userrow['treinamento'] ?? 'None');
+    $entries = ($training === '' || $training === 'None') ? [] : array_values(array_filter(explode(';', $training), 'strlen'));
+    $found = false;
+    $valueNow = 0;
+    $valueTotal = $totalSessions;
+    $rebuilt = [];
+
+    foreach ($entries as $entry) {
+        $parts = explode(',', $entry);
+        $entryKey = $parts[0] ?? '';
+        if ($entryKey !== $trainingKey && $entryKey !== $legacyKey) {
+            $rebuilt[] = $entry;
+            continue;
+        }
+
+        $found = true;
+        $current = isset($parts[1]) ? (int)$parts[1] : 0;
+        $total = isset($parts[2]) ? max(1, (int)$parts[2]) : $totalSessions;
+        $valueTotal = $total;
+
+        if ($start) {
+            ssSearchArtRedirect('Search Art is already in your Discipline queue.', 'treinamentoequests.php?do=treinamento');
+        }
+        if ($current >= $total) {
+            ssSearchArtRedirect('Search Art development is already complete.', 'treinamentoequests.php?do=treinamento');
+        }
+
+        include('funcoesinclusas.php');
+        $lastDate = $parts[3] ?? $today;
+        $lastTime = $parts[4] ?? $todayHour;
+        $wait = isset($parts[5]) ? (int)$parts[5] : $cooldownMinutes;
+        $ready = tempojutsu($lastDate, $lastTime, $wait);
+        if ($ready !== 'ok') {
+            ssSearchArtRedirect('Search Art is still on cooldown. Wait ' . (string)$ready . ' minute(s).', 'treinamentoequests.php?do=treinamento');
+        }
+
+        $current++;
+        $valueNow = $current;
+        $rebuilt[] = $trainingKey . ',' . $current . ',' . $total . ',' . $today . ',' . $todayHour . ',' . $cooldownMinutes;
+    }
+
+    if (!$found) {
+        $valueNow = 1;
+        $rebuilt[] = $trainingKey . ',1,' . $totalSessions . ',' . $today . ',' . $todayHour . ',0';
+    }
+
+    $userrow['treinamento'] = implode(';', $rebuilt) . ';';
+    doquery("UPDATE {{table}} SET treinamento='" . mysqli_real_escape_string($link, $userrow['treinamento']) . "' WHERE charname='" . mysqli_real_escape_string($link, $userrow['charname']) . "' LIMIT 1", 'users');
+
+    if ($valueNow >= $valueTotal) {
+        doquery("UPDATE {{table}} SET jutsudebuscahtml='1' WHERE charname='" . mysqli_real_escape_string($link, $userrow['charname']) . "' LIMIT 1", 'users');
+        ssSearchArtRedirect('Search Art development is complete. The discipline is now active.', 'treinamentoequests.php?do=treinamento');
+    }
+
+    ssSearchArtRedirect('Search Art development advanced to ' . $valueNow . '/' . $valueTotal . '.', 'treinamentoequests.php?do=treinamento');
+}
+
+function useSearchArt(): void {
+    ssRequireFieldAccess();
+    global $userrow, $link;
+
+    if (!ssSearchArtIsDeveloped()) {
+        ssSearchArtRedirect('Search Art must be developed before it can be used.');
+    }
+
+    if (!isset($_POST['submit'])) {
+        $page = '<section class="ss-card ss-codex">'
+            . '<div class="ss-action-card__header"><span class="ss-eyebrow">FIELD ART</span><h2>Search Art</h2>'
+            . '<p>Spend 30 Essence to locate an operative.</p></div>'
+            . '<form class="ss-search-inline" action="jutsudebusca.php?do=usar" method="post">'
+            . '<label for="nomedaprocura">Operative name</label>'
+            . '<input id="nomedaprocura" name="nomedaprocura" maxlength="30" required>'
+            . '<button type="submit" name="submit">Locate</button>'
+            . '</form></section>';
+        display($page, 'Search Art', false, false, false);
+        return;
+    }
+
+    $targetName = isset($_POST['nomedaprocura']) && is_string($_POST['nomedaprocura']) ? trim($_POST['nomedaprocura']) : '';
+    if ($targetName === '') {
+        ssSearchArtRedirect('Enter an operative name to search.');
+    }
+
+    $safeName = mysqli_real_escape_string($link, $targetName);
+    $userquery = doquery("SELECT * FROM {{table}} WHERE charname='$safeName' LIMIT 1", 'users');
+    if (mysqli_num_rows($userquery) !== 1) {
+        ssSearchArtRedirect('No operative with that name exists.');
+    }
+
+    $target = mysqli_fetch_array($userquery);
+    $mp = (int)($userrow['currentmp'] ?? 0);
+    if ($mp < 30) {
+        ssSearchArtRedirect('Search Art requires 30 Essence.');
+    }
+
+    $remaining = $mp - 30;
+    doquery("UPDATE {{table}} SET currentmp='$remaining' WHERE charname='" . mysqli_real_escape_string($link, $userrow['charname']) . "' LIMIT 1", 'users');
+
+    $lat = (int)$target['latitude'];
+    $long = (int)$target['longitude'];
+    $latLabel = $lat === 0 ? '0' : abs($lat) . ($lat > 0 ? 'N' : 'S');
+    $longLabel = $long === 0 ? '0' : abs($long) . ($long > 0 ? 'E' : 'W');
+
+    $onlineQuery = doquery("SELECT id FROM {{table}} WHERE UNIX_TIMESTAMP(onlinetime) >= '" . (time() - 61) . "' AND charname='$safeName' LIMIT 1", 'users');
+    $online = mysqli_num_rows($onlineQuery) === 1;
+
+    $page = '<section class="ss-card ss-codex"><div class="ss-action-card__header">'
+        . '<span class="ss-eyebrow">SEARCH RESULT</span><h2>' . htmlspecialchars($target['charname'], ENT_QUOTES, 'UTF-8') . '</h2></div>'
+        . '<div class="ss-detail-grid">'
+        . '<div><span>Latitude</span>' . htmlspecialchars($latLabel, ENT_QUOTES, 'UTF-8') . '</div>'
+        . '<div><span>Longitude</span>' . htmlspecialchars($longLabel, ENT_QUOTES, 'UTF-8') . '</div>'
+        . '<div><span>Status</span>' . ($online ? 'Online' : 'Offline') . '</div>'
+        . '<div><span>Essence spent</span>30</div>'
+        . '</div>'
+        . '<a class="ss-side-action" href="jutsudebusca.php?do=usar">Search again</a></section>';
+
+    display($page, 'Search Art', false, false, false);
+}
 ?>

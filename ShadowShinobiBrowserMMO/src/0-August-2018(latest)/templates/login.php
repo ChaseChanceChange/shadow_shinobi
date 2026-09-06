@@ -12,7 +12,7 @@ $template = <<<THEVERYENDOFYOU
   <div class="ss-login__intro">
     <span class="ss-eyebrow">SHADOW SHINOBI</span>
     <h1 id="ss-login-title">Enter the world</h1>
-    <p>Build your character, train your abilities, master your gear, and take on the next mission.</p>
+    <p>Build your operative, develop your Arts, master your Gear, and accept the next Contract.</p>
   </div>
 
   <form action="login.php?do=login" method="post" id="formback" class="ss-login__form">
@@ -27,7 +27,7 @@ $template = <<<THEVERYENDOFYOU
       <label for="senhaform">Password</label>
       <div class="ss-field">
         <input type="password" size="30" name="password" id="senhaform" autocomplete="current-password" required />
-        <a href="javascript: mostrarpass('senhaform');" aria-label="Show or hide password"><img src="layoutnovo/dropmenu/b4.gif" title="Mostrar/Ocultar Senha" border="0" alt="Show or hide password"></a>
+        <a href="javascript: mostrarpass('senhaform');" aria-label="Show or hide password"><img src="layoutnovo/dropmenu/b4.gif" title="Show/Hide Password" border="0" alt="Show or hide password"></a>
       </div>
 
       <label class="ss-check">
@@ -47,7 +47,7 @@ $template = <<<THEVERYENDOFYOU
   $devlogin
 
   <div class="ss-login__links">
-    <p>New to Shadow Shinobi? <a href="users.php?do=register">Create your character.</a></p>
+    <p>New to Shadow Shinobi? <a href="users.php?do=register">Create your operative.</a></p>
     <p><a href="users.php?do=changepassword">Change your password</a> · <a href="users.php?do=lostpassword">Recover a lost password</a></p>
     <p>Registered but missing your confirmation email? <a href="ativarconta.php">Activate your account</a>.</p>
   </div>

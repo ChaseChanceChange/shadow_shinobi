@@ -1,12 +1,21 @@
 <?php
 $template = <<<THEVERYENDOFYOU
-<form action="users.php?do=doardinheiro" method="post">
-<table width="100%">
-<tr><td colspan="2">Complete os campos abaixo corretamente:</td></tr>
-<tr><td width="20%">Doar Para(Nome do Jogador):</td><td><input type="text" name="username" size="30" maxlength="30" /></td></tr>
-<tr><td width="20%">Quantidade de Ryou:</td><td><input type="text" name="oldpass" size="20" /></td></tr>
-<tr><td colspan="2"><input type="submit" name="submit" value="Doar" /> <input type="reset" name="reset" value="Apagar Campos" /></td></tr>
-</table>
-</form>
+<section class="ss-card ss-action-card">
+  <div class="ss-action-card__header">
+    <span class="ss-eyebrow">TRANSFER</span>
+    <h2>Transfer Coin</h2>
+    <p>Send Coin to another operative.</p>
+  </div>
+  <form action="users.php?do=doardinheiro" method="post" class="ss-action-card__form">
+    <label for="coin-recipient">Recipient operative</label>
+    <input id="coin-recipient" type="text" name="username" size="30" maxlength="30" autocomplete="off" required />
+    <label for="coin-amount">Coin amount</label>
+    <input id="coin-amount" type="number" name="oldpass" min="0" step="1" inputmode="numeric" required />
+    <div class="buttons ss-action-card__actions">
+      <button type="submit" name="submit">Transfer</button>
+      <button type="reset" name="reset">Clear</button>
+    </div>
+  </form>
+</section>
 THEVERYENDOFYOU;
 ?>

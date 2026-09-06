@@ -9,7 +9,7 @@ $template = <<<THEVERYENDOFYOU
     <div class="ss-side-card__header"><span class="ss-eyebrow">NAVIGATION</span><h2>Coordinates</h2></div>
     <div class="ss-minimap">$minimap</div>
     <a class="ss-side-link ss-side-link--primary" href="javascript:openmappopup()">Open world map</a>
-    <form action="index.php?do=move" method="post" class="ss-movement-grid" aria-label="Move character">
+    <form action="index.php?do=move" method="post" class="ss-movement-grid" aria-label="Move operative">
       <button name="north" type="submit">North</button>
       <button name="west" type="submit">West</button>
       <button name="east" type="submit">East</button>
@@ -23,7 +23,7 @@ $template = <<<THEVERYENDOFYOU
     <div class="ss-destination-list">{{townslist}}</div>
     <div class="ss-side-actions">
       {{adminlink}}
-      <button type="button" class="ss-side-action" onclick="procurarjogador()">Find player</button>
+      <button type="button" class="ss-side-action" onclick="procurarjogador()">Find operative</button>
       <a class="ss-side-action" href="pm.php?do=ler">Messages <img src="images/$imagem" alt="Messages"></a>
       <a class="ss-side-action" href="mainmsg.php?do2=enviarpm">New message <img src="images/enviar1.jpg" alt="New message"></a>
     </div>
@@ -31,7 +31,7 @@ $template = <<<THEVERYENDOFYOU
 
   <section class="ss-side-card ss-history-card">
     <div class="ss-side-card__header"><span class="ss-eyebrow">HISTORY</span><h2>Recent activity</h2></div>
-    <div class="ss-history-preview"><span class="ss-history-preview__label">Last defeated</span><strong>$monstro[0]</strong><span>$monstro[1] time(s)</span></div>
+    <div class="ss-history-preview"><span class="ss-history-preview__label">Last threat defeated</span><strong>$monstro[0]</strong><span>$monstro[1] time(s)</span></div>
     <div class="ss-history-content">$fimh</div>
   </section>
   <div id="procurarjog"></div>
