@@ -3,7 +3,7 @@ global $conteudouser, $devlogin;
 $template = <<<THEVERYENDOFYOU
 <section class="ss-login" aria-labelledby="ss-login-title">
   <div class="ss-login__brand">
-    <img src="images/login.gif" alt="Shadow Shinobi" />
+    <img src="images/shadow_shinobi_banner.jpg" alt="Shadow Shinobi" />
     <span>Shadow Shinobi · Browser MMO</span>
   </div>
 
