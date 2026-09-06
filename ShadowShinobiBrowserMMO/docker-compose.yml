@@ -13,10 +13,14 @@ services:
       DB_NAME: shadow_shinobi
       DB_PREFIX: dk
       GAME_SECRET: local-development-secret-change-me
+      APP_ENV: local
+      DEV_MODE: "1"
+      DEV_USERNAME: Oyatsumi
     volumes:
       - ./src/0-August-2018(latest):/var/www/html
     depends_on:
-      - db
+      db:
+        condition: service_healthy
   db:
     image: mariadb:11
     environment:
@@ -24,8 +28,29 @@ services:
       MARIADB_USER: shadow
       MARIADB_PASSWORD: shadow_dev_password
       MARIADB_ROOT_PASSWORD: root_dev_password
+    healthcheck:
+      test: ["CMD-SHELL", "mariadb-admin ping -h 127.0.0.1 -P 3306 -u shadow -pshadow_dev_password --silent"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
     volumes:
       - shadow-db:/var/lib/mysql
       - ./database (sql)/shadow_shinobi.sql:/docker-entrypoint-initdb.d/01-shadow.sql:ro
+      - ./database (sql)/migrations/001_shadow_identity.sql:/docker-entrypoint-initdb.d/02-shadow-001.sql:ro
+      - ./database (sql)/migrations/002_shadow_content_cleanup.sql:/docker-entrypoint-initdb.d/03-shadow-002.sql:ro
+      - ./database (sql)/migrations/003_shadow_final_identity.sql:/docker-entrypoint-initdb.d/04-shadow-003.sql:ro
+      - ./database (sql)/migrations/004_shadow_defaults.sql:/docker-entrypoint-initdb.d/05-shadow-004.sql:ro
+  db-admin:
+    image: phpmyadmin:5-apache
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      PMA_ARBITRARY: 0
 volumes:
   shadow-db:

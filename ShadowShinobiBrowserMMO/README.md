@@ -1,63 +1,86 @@
-Naruto Browser Mmorpg
-===================
+# Shadow Shinobi Browser MMO
 
-A fully functional open source naruto PHP/Javascript/CSS/HTML/SQL based online browser MMO RPG.
+Shadow Shinobi is a persistent browser-based squad RPG built from an open-source PHP/JavaScript/CSS/HTML/SQL game engine.
 
-Updated in 2018, fixed some bugs that made it fully functional (at least for the basic functions)!
+The project is being progressively transformed into its own setting, terminology, presentation, content and artwork while keeping the proven gameplay machinery stable during the modernization pass.
 
+## Current state
 
-Facebook official group:
-https://www.facebook.com/groups/957796797569032/
+- **Runtime:** PHP 8.2 + Apache in Docker Compose
+- **Database:** MariaDB
+- **Active game source:** `src/0-August-2018(latest)`
+- **Primary branch:** `modernize-safe-pass`
+- **Database table prefix:** `dk` (preserved for compatibility)
+- **UI identity:** Shadow Shinobi
 
+## Shadow terminology
 
+The player-facing vocabulary is being replaced with the Shadow Shinobi setting while engine identifiers remain stable.
 
-Attention! Don't try to host this game on your machine because it may induce various errors on the php interpreter, instead, use an online host such as the one provided within this document. In order to put the game working you may follow the instructions below:
+| Legacy concept | Shadow Shinobi term |
+| --- | --- |
+| Player | Operative |
+| Character | Operative Record |
+| Mission / Quest | Contract |
+| Training | Discipline |
+| Jutsu / Technique | Art |
+| Chakra | Essence |
+| Village | Enclave |
+| Kage / village leader | Warden |
+| Rank / Level | Standing |
+| Experience | Insight |
+| Equipment | Gear |
+| Inventory / Backpack | Pack |
+| Bank | Vault |
+| Drop | Recovery |
+| Enemy / Monster | Threat |
 
-1) Upload all the files within "src" to the host of your preference.
-	
-	-> You can also create an account here and do it: http://www.freewebhostingarea.com/
-	
-2) Acess the SQL_database of your choice and upload the .sql on the database (sql) folder from your phpMyAdmin on the "import" option, then. Afterwards, the database will be populated with the tables of the game.
-	
-	-> Change the database name (on the top of your .sql file, e.g., Database: `newname`) according to your preferences and the name of your mySQL table.
-	
-3) Change the config.php file within the "src" folder to your mysql connection parameters, don't change the prefix "dk".
-	
-	-> The SQL file contains the tables named with this prefix, so please do not change it.
+These labels are presentation-layer terminology. Existing routes, database keys, state values and other engine contracts are intentionally preserved unless a dedicated migration explicitly changes them.
 
-4) Open your domain in your browser and login with (admin account):
+## Development approach
 
-	-> Account: Oyatsumi
-	
-	-> Pass.: 123456 
-	
+The modernization is being performed in controlled passes:
 
-You can (now) register and login with any account, if you want to create a normal player-account.
+1. Keep the original gameplay and data contracts working.
+2. Keep PHP 8 compatibility fixes at the runtime boundary.
+3. Replace the visible presentation and terminology.
+4. Replace franchise-specific content with Shadow Shinobi content using deterministic data changes.
+5. Replace artwork and other third-party assets through a separate asset/license review.
+6. Add regression checks before deeper mechanics changes.
 
-Ps.: The game is in portuguese (the dialogs and stuff), sorry about that. You may change or do whatever you want.
-This code is under the MIT license.
-Please provide credits.
+Do not change the `dk_*` schema prefix, existing action routes, or combat state values casually. Those are part of the current engine contract.
 
-Ps2.: You may access "admin.php" to alter some stuff, but beware, some images within the project folder are linked to some contents in the dataset. The "monster cards" are directly connected.
+## Asset replacement
 
-Ps3.: To play without an admin account ("authlevel == 1"), remove this piece of code from your index.php:
+Most artwork is referenced by an existing filename/path. A replacement image can generally be dropped in under the same path and filename so the PHP/HTML code does not need to change. Keep the expected file extension and use compatible dimensions/aspect ratio where practical.
 
-	
-	if ($controlrow["gameopen"] == 0) {
-	if ($userrow["authlevel"] != 1){
-	display("Foi encontrado um bug no jogo. O mesmo estará fechado até o lançamento da próxima versão. Por favor volte mais tarde e 	desculpe o transtorno.","Fechado"); die();
-	}
-	}
-	
-Ps4.: You may change the theme of the game to whatever you want and keep using the engine. You can also use the psds as you wish (included here).
+Artwork is being treated separately from the code retheme so that gameplay logic can remain stable while the visual identity is rebuilt.
 
-By Oyatsumi ( Érick Oliveira Rodrigues ).
+## Attribution and licensing
 
+This project is derived from the open-source Oyatsumi/NarutoBrowserMmorpg codebase. The upstream project identifies the source code as MIT licensed and requests attribution.
 
+The MIT notice for the applicable source remains part of this project. Third-party artwork, fonts, music, icons and replacement assets must be reviewed under their own licenses; an open-source engine license does not automatically license third-party assets.
 
-Here is a link with a video demonstration: https://www.youtube.com/watch?v=dKdVN4uJirU
+## Local development
 
+From the project directory:
 
+```powershell
+git switch modernize-safe-pass
+git pull --ff-only origin modernize-safe-pass
+docker compose up -d --build
+docker compose ps
+```
 
-Here's a link with a series of psds used in the game, in case that could help >
-https://drive.google.com/file/d/0BxJH7y8eF0sjcmNsVGtNbFlNZkU/edit?usp=sharing
+Then open:
+
+`http://localhost:8080/`
+
+The phpMyAdmin service is exposed at `http://localhost:8081/` in the current Docker setup.
+
+## Credits
+
+Original engine: Oyatsumi / contributors to the upstream browser MMO project.
+
+Shadow Shinobi modernization, retheme and original content are maintained separately from the upstream game's identity and assets.

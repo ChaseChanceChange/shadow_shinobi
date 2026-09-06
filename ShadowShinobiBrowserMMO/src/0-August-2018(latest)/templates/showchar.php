@@ -1,127 +1,38 @@
 <?php
 global $userrow;
-if ($userrow["authlevel"] == 1) {$userrow["adm"] = "<font color=green>Administrador</font><br>";}
-elseif ($userrow["acesso"] == 2){$userrow["adm"] = "<font color=orange>Tutor</font><br>";}
-elseif ($userrow["acesso"] == 3){$userrow["adm"] = "<font color=blue>GameMaster</font><br>";}
+if ($userrow["authlevel"] == 1) {$userrow["adm"] = "<span class=\"ss-role ss-role--admin\">Administrator</span>";}
+elseif ($userrow["acesso"] == 2){$userrow["adm"] = "<span class=\"ss-role ss-role--tutor\">Tutor</span>";}
+elseif ($userrow["acesso"] == 3){$userrow["adm"] = "<span class=\"ss-role ss-role--gm\">GameMaster</span>";}
 else {$userrow["adm"] = "";}
 
-//durabilidade
-$durabm = explode(",",$userrow["durabilidade"]);
-for ($i = 1; $i < 7; $i ++){
-if ($durabm[$i] == "X"){$durabm[$i] = "*";}
+$durabm = explode(",", (string)($userrow["durabilidade"] ?? ""));
+for ($i = 1; $i < 7; $i ++) {
+    if (!isset($durabm[$i])) { $durabm[$i] = "0"; }
+    if ($durabm[$i] == "X") {$durabm[$i] = "*";}
 }
-
-if ($userrow["senjutsuhtml"] != ""){ $userrow["magiclist"] = "<font color=darkgreen>Senjutsu<br></font>".$userrow["magiclist"];}
-if ($userrow["jutsudebuscahtml"] != ""){ $userrow["magiclist"] = "<font color=darkgreen>Jutsu de Busca</font><br>".$userrow["magiclist"];}
-
+if (($userrow["senjutsuhtml"] ?? "") != "") {$userrow["magiclist"] = "<span class=\"ss-ability-tag\">Senjutsu</span><br>".($userrow["magiclist"] ?? "");}
+if (($userrow["jutsudebuscahtml"] ?? "") != "") {$userrow["magiclist"] = "<span class=\"ss-ability-tag\">Search Technique</span><br>".($userrow["magiclist"] ?? "");}
 
 $template = <<<THEVERYENDOFYOU
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<table width="215">
-
-<tr><td>
-
-<table border="0" cellpadding=0 cellspacing=0 background="layoutnovo/menuslados/meio.png">
-<tr><td colspan="3" width="224" height="34" background="layoutnovo/buttons/personagem.png"></td></tr><tr background="layoutnovo/menuslados/meio.png">
-<td width="5"></td>
-<td>
-<center><img src="layoutnovo/avatares/{{avatar}}.jpg"></center><br>
-<b>{{charname}}</b><br />{{adm}}
-
-Dificuldade {{difficulty}}<br />
-Especializa??o: {{charclass}}<br />
-Gradua??o: {{graduacao}}<br><br>
-
-Level: {{level}}<br />
-Experiência: {{experience}} {{plusexp}}<br />
-Próximo Level: {{nextlevel}}<br />
-Ryou: {{gold}} {{plusgold}}<br />
-Pontos de Vida: {{currenthp}} / {{maxhp}}<br />
-Chakra: {{currentmp}} / {{maxmp}}<br />
-Pontos de Viagem: {{currenttp}} / {{maxtp}}<br />
-Pontos Naturais: {{currentnp}} / {{maxnp}}<br />
-Pontos Elementais: {{currentep}} / {{maxep}}<br />
-Chance de Drop: <font color="gray">+{{droprate}}%</font><br /><br />
-
-Força: {{strength}}<br />
-Destreza: {{dexterity}}<br />
-Poder de Ataque: {{attackpower}}<br />
-Poder de Defesa: {{defensepower}}<br /><br>
-
-Agilidade: {{agilidade}}<br>
-Sorte: {{sorte}}<br>
-Determinação: {{determinacao}}<br>
-Precisão: {{precisao}}<br>
-Inteligência: {{inteligencia}}<br>
-
-</td>
-<td width="5"></td></td>
-</tr><tr><td colspan="3" width="224" height="21" background="layoutnovo/menuslados/baixo.png"></td></tr></table>
-
-</td></tr>
-</table><br />
-
-<table width="215">
-
-<tr><td>
-
-<table border="0" cellpadding=0 cellspacing=0 background="layoutnovo/menuslados/meio.png">
-<tr><td colspan="3" width="224" height="34" background="layoutnovo/buttons/inventario.png"></td></tr><tr background="layoutnovo/menuslados/meio.png">
-<td width="5"></td>
-<td>
-
-
-<center>
-<table border="0" cellspacing="0" cellpadding="0" background="layoutnovo/equipamentos/equipamentos.png" width="168" style="background-repeat:no-repeat;;background-position:left top"><tr>
-<td height="15" colspan="4"></td></tr><tr>
-<td height="37" width="23"></td><td width="31"></td><td width="31" style="background-repeat:no-repeat;;background-position:left top" background="layoutnovo/equipamentos/{{shieldid}}.png"></td><td colspan="2"></td></tr><tr>
-
-<td  height="34" width="23"></td><td width="31" style="background-repeat:no-repeat;;background-position:left top" background="layoutnovo/equipamentos/{{weaponid}}.png"></td><td width="31" style="background-repeat:no-repeat;;background-position:left top" background="layoutnovo/equipamentos/{{armorid}}.png"></td><td style="background-repeat:no-repeat;;background-position:left top" background="layoutnovo/equipamentos/{{weaponid}}d.png"></td></tr>
-<tr>
-<td colspan="4" height="35"></td>
-</table>
-
-<table border="5" cellspacing="0" 
-cellpadding="0" background="layoutnovo/equipamentos/drops/fundo.png" style="background-repeat:no-repeat;;background-position:left top" width="128">
-<tr height="3"></tr>
-<tr><td height="34" style="width: 0px;"></td><td background="layoutnovo/equipamentos/drops/{{slot1id}}.png" width="37" style="background-repeat:no-repeat;;background-position:left top" ></td><td background="layoutnovo/equipamentos/drops/{{slot2id}}.png" width="36" style="background-repeat:no-repeat;;background-position:left top"></td><td background="layoutnovo/equipamentos/drops/{{slot3id}}.png" width="35" style="background-repeat:no-repeat;;background-position:left top"></td><td></td></tr>
-<tr height="4"><td colspan="7"></td></tr>
-</table>
-</center>
-
-<table width="100%">
-<tr><td><img src="images/icon_weapon.gif" alt="Arma" title="Durabilidade: {{durabm1}}" /></td><td width="100%">Arma: {{weaponname}}</td></tr>
-<tr><td><img src="images/icon_armor.gif" alt="Colete" title="Durabilidade: {{durabm2}}" /></td><td width="100%">Colete: {{armorname}}</td></tr>
-<tr><td><img src="images/icon_shield.gif" alt="Bandana" title="Durabilidade: {{durabm3}}" /></td><td width="100%">Bandana: {{shieldname}}</td></tr>
-<tr><td><img src="images/orb.gif" alt="Item Adicional" title="Durabilidade: {{durabm4}}" /></td><td width="100%">Slot 1: {{slot1name}}</td></tr>
-<tr><td><img src="images/orb.gif" alt="Item Adicional" title="Durabilidade: {{durabm5}}" /></td><td width="100%">Slot 2: {{slot2name}}</td></tr>
-<tr><td><img src="images/orb.gif" alt="Item Adicional" title="Durabilidade: {{durabm6}}" /></td><td width="100%">Slot 3: {{slot3name}}</td></tr>
-</table>
-
-</td>
-<td width="5"></td></td>
-</tr><tr><td colspan="3" width="224" height="21" background="layoutnovo/menuslados/baixo.png"></td></tr></table>
-
-</td></tr>
-</table><br />
-
-<table width="215">
-
-<tr><td>
-
-<table border="0" cellpadding=0 cellspacing=0 background="layoutnovo/menuslados/meio.png">
-<tr><td colspan="3" width="224" height="34" background="layoutnovo/buttons/jutsus.png"></td></tr><tr background="layoutnovo/menuslados/meio.png">
-<td width="5"></td>
-<td>
-
-{{magiclist}}
-
-</td>
-<td width="5"></td></td>
-</tr><tr><td colspan="3" width="224" height="21" background="layoutnovo/menuslados/baixo.png"></td></tr></table>
-
-</td></tr>
-</table><br />
+<style>
+.ss-char-sheet{width:min(100%,720px);margin:0 auto;padding:14px;background:#0a0d12;color:#edf2f7;font-family:Inter,system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;font-size:13px;line-height:1.45}.ss-char-sheet *{box-sizing:border-box}.ss-char-head{display:flex;gap:14px;align-items:center;padding:14px;border:1px solid #303947;border-radius:10px;background:linear-gradient(135deg,#1b222c,#0f141b)}.ss-char-avatar{width:90px;height:90px;object-fit:cover;border:1px solid #4e5968;border-radius:10px}.ss-char-head h1{margin:2px 0 4px;font-size:1.35rem}.ss-char-head p{margin:2px 0;color:#98a4b2}.ss-char-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}.ss-char-panel{padding:13px;border:1px solid #303947;border-radius:9px;background:#11161d}.ss-char-panel h2{margin:0 0 9px;padding-bottom:7px;border-bottom:1px solid #252d38;font-size:.78rem;text-transform:uppercase;letter-spacing:.14em;color:#98a4b2}.ss-stat-list{display:grid;gap:5px}.ss-stat{display:flex;justify-content:space-between;gap:12px;padding:6px 7px;border-radius:5px;background:rgba(255,255,255,.025)}.ss-stat span{color:#98a4b2}.ss-stat b{color:#edf2f7;text-align:right}.ss-equipment-preview{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:52px 52px;gap:6px;padding:9px;border-radius:8px;background:radial-gradient(circle,#232c37,#0b0f15 76%)}.ss-eq{display:grid;place-items:center}.ss-eq img{max-width:38px;max-height:38px}.ss-eq--shield{grid-column:2}.ss-eq--weapon{grid-column:1;grid-row:2}.ss-eq--armor{grid-column:2;grid-row:2}.ss-eq--secondary{grid-column:3;grid-row:2}.ss-slots-preview{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:7px}.ss-slots-preview img{width:34px;height:34px;object-fit:contain;margin:auto}.ss-equipment-rows{display:grid;gap:4px;margin-top:10px}.ss-equipment-rows>div{display:grid;grid-template-columns:20px 1fr auto;gap:7px;align-items:center;padding:6px 7px;border:1px solid rgba(255,255,255,.05);border-radius:5px}.ss-equipment-rows img{width:18px;height:18px}.ss-equipment-rows span{color:#98a4b2;font-size:.68rem}.ss-equipment-rows b{font-size:.74rem}.ss-equipment-rows small{color:#687585;font-size:.63rem}.ss-ability-tag{color:#9ad7b0;font-weight:700}.ss-role{display:inline-block;margin-bottom:5px;font-size:.68rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#d7dce3}.ss-share{margin-top:10px;padding:9px;border:1px dashed #303947;border-radius:7px;background:#0c1016}.ss-share input{width:100%;padding:7px;background:#080b10;color:#98a4b2;border:1px solid #303947;border-radius:5px}
+@media(max-width:600px){.ss-char-grid{grid-template-columns:1fr}.ss-char-head{align-items:flex-start}.ss-char-avatar{width:72px;height:72px}}
+</style>
+<section class="ss-char-sheet" aria-label="Character sheet">
+  <header class="ss-char-head">
+    <img class="ss-char-avatar" src="layoutnovo/avatares/{{avatar}}.jpg" alt="{{charname}} avatar">
+    <div><span style="color:#98a4b2;font-size:.68rem;letter-spacing:.16em;text-transform:uppercase">CHARACTER SHEET</span><h1>{{charname}}</h1>$userrow[adm]<p>{{charclass}} Â· {{difficulty}} Â· Grade {{graduacao}}</p></div>
+  </header>
+  <div class="ss-char-grid">
+    <section class="ss-char-panel"><h2>Progression</h2><div class="ss-stat-list"><div class="ss-stat"><span>Level</span><b>{{level}}</b></div><div class="ss-stat"><span>Experience</span><b>{{experience}} {{plusexp}}</b></div><div class="ss-stat"><span>Next level</span><b>{{nextlevel}}</b></div><div class="ss-stat"><span>Ryou</span><b>{{gold}} {{plusgold}}</b></div><div class="ss-stat"><span>Drop rate</span><b>+{{droprate}}%</b></div></div></section>
+    <section class="ss-char-panel"><h2>Resources</h2><div class="ss-stat-list"><div class="ss-stat"><span>HP</span><b>{{currenthp}} / {{maxhp}}</b></div><div class="ss-stat"><span>Chakra</span><b>{{currentmp}} / {{maxmp}}</b></div><div class="ss-stat"><span>Travel</span><b>{{currenttp}} / {{maxtp}}</b></div><div class="ss-stat"><span>Natural</span><b>{{currentnp}} / {{maxnp}}</b></div><div class="ss-stat"><span>Elemental</span><b>{{currentep}} / {{maxep}}</b></div></div></section>
+    <section class="ss-char-panel"><h2>Core attributes</h2><div class="ss-stat-list"><div class="ss-stat"><span>Strength</span><b>{{strength}}</b></div><div class="ss-stat"><span>Dexterity</span><b>{{dexterity}}</b></div><div class="ss-stat"><span>Attack power</span><b>{{attackpower}}</b></div><div class="ss-stat"><span>Defense power</span><b>{{defensepower}}</b></div></div></section>
+    <section class="ss-char-panel"><h2>Advanced attributes</h2><div class="ss-stat-list"><div class="ss-stat"><span>Agility</span><b>{{agilidade}}</b></div><div class="ss-stat"><span>Luck</span><b>{{sorte}}</b></div><div class="ss-stat"><span>Determination</span><b>{{determinacao}}</b></div><div class="ss-stat"><span>Precision</span><b>{{precisao}}</b></div><div class="ss-stat"><span>Intelligence</span><b>{{inteligencia}}</b></div></div></section>
+    <section class="ss-char-panel"><h2>Loadout</h2><div class="ss-equipment-preview"><div class="ss-eq ss-eq--shield"><img src="layoutnovo/equipamentos/{{shieldid}}.png" alt="{{shieldname}}"></div><div class="ss-eq ss-eq--weapon"><img src="layoutnovo/equipamentos/{{weaponid}}.png" alt="{{weaponname}}"></div><div class="ss-eq ss-eq--armor"><img src="layoutnovo/equipamentos/{{armorid}}.png" alt="{{armorname}}"></div><div class="ss-eq ss-eq--secondary"><img src="layoutnovo/equipamentos/{{weaponid}}d.png" alt="Secondary weapon"></div></div><div class="ss-slots-preview"><img src="layoutnovo/equipamentos/drops/{{slot1id}}.png" alt="{{slot1name}}"><img src="layoutnovo/equipamentos/drops/{{slot2id}}.png" alt="{{slot2name}}"><img src="layoutnovo/equipamentos/drops/{{slot3id}}.png" alt="{{slot3name}}"></div></section>
+    <section class="ss-char-panel"><h2>Equipped items</h2><div class="ss-equipment-rows"><div><img src="images/icon_weapon.gif" alt=""><span>Weapon</span><b>{{weaponname}}</b><small>$durabm[1]</small></div><div><img src="images/icon_armor.gif" alt=""><span>Armor</span><b>{{armorname}}</b><small>$durabm[2]</small></div><div><img src="images/icon_shield.gif" alt=""><span>Shield</span><b>{{shieldname}}</b><small>$durabm[3]</small></div><div><img src="images/orb.gif" alt=""><span>Slot 1</span><b>{{slot1name}}</b><small>$durabm[4]</small></div><div><img src="images/orb.gif" alt=""><span>Slot 2</span><b>{{slot2name}}</b><small>$durabm[5]</small></div><div><img src="images/orb.gif" alt=""><span>Slot 3</span><b>{{slot3name}}</b><small>$durabm[6]</small></div></div></section>
+  </div>
+  <section class="ss-char-panel" style="margin-top:10px"><h2>Techniques</h2><div>{{magiclist}}</div></section>
+  <div class="ss-share"><span style="display:block;color:#98a4b2;font-size:.68rem;margin-bottom:5px">Character link</span><input type="text" readonly value="mostrarchar.php?nomechar={{charname}}" aria-label="Character link"></div>
+</section>
 THEVERYENDOFYOU;
 ?>

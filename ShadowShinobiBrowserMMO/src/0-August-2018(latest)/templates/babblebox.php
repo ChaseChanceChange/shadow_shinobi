@@ -1,7 +1,7 @@
 <?php
 $template = <<<THEVERYENDOFYOU
 <head>
-<title>Chat Global</title>
+<title>Open Channel</title>
 <style type="text/css" media="screen">@import "novobotao.css";</style>
 <style type="text/css">
 body {

@@ -1,6 +1,10 @@
 <?php
 global $mainmsg, $userrow;
-$explodirmsg = explode(",,",$userrow['mainmsg']);
+
+// The template can be included before authentication is established.
+// Treat a missing user row/main message as the legacy "None" state.
+$legacyMainMessage = is_array($userrow) ? (string) ($userrow['mainmsg'] ?? 'None') : 'None';
+$explodirmsg = explode(",,", $legacyMainMessage);
 
 //Justu de busca, formulário de preenchimento do nome.
 if ($explodirmsg[0] == 1){
@@ -21,7 +25,6 @@ if ($explodirmsg[0] == 1){
 						
 		
 }
-	
 	
 	
 	
@@ -128,20 +131,19 @@ elseif($explodirmsg[0] == "None"){
 	}
 
 else{
-	$variavelaux = explode("#$%;",$userrow['mainmsg']);
-	$nomeimagem = $variavelaux[0];
-	$titulojanela = $variavelaux[1];
-	$mainmsg = $variavelaux[2];	
+	$variavelaux = explode("#$%;",$legacyMainMessage);
+	$nomeimagem = $variavelaux[0] ?? "";
+	$titulojanela = $variavelaux[1] ?? "";
+	$mainmsg = $variavelaux[2] ?? "";	
 }
 	
 	
 	
 	
-		
 	
 	
 
-if (($userrow['mainmsg'] != "None")  && ($userrow != false)){$updatequery = doquery("UPDATE {{table}} SET mainmsg='None' WHERE charname='".$userrow['charname']."' LIMIT 1","users");
+if (($legacyMainMessage != "None")  && ($userrow != false)){$updatequery = doquery("UPDATE {{table}} SET mainmsg='None' WHERE charname='".$userrow['charname']."' LIMIT 1","users");
 $titulojanela = utf8_decode($titulojanela);
 $mainmsg = utf8_decode($mainmsg);
 $titulojanela = strtoupper($titulojanela);

@@ -1,206 +1,124 @@
 <?php
 global $userrow;
 include('funcoesinclusas.php');
-//slots para backpack
-for ($i = 1; $i < 5; $i ++){
-if ($userrow["bp".$i] != "None"){
-$varbackpack[$i] = explode(",",$userrow["bp".$i]);
-$mostrar = "";
-$pastadoslot = "";
-if ($varbackpack[$i][2] > 3) {$pastadoslot = "drops/";}
-if ($varbackpack[$i][3] == "X"){$varbackpack[$i][3] = "*";}
-$varbackpack[$i][0] = conteudoexplic($varbackpack[$i][1], $varbackpack[$i][2], 'bp'.$i.'atr', $varbackpack[$i][3]);
-if (!is_numeric($varbackpack[$i][1])) {$varbackpack[$i][1] .= $varbackpack[$i][2]; $pastadoslot = "";}
-/*durabilidade
-if ($varbackpack[$i][3] == "X"){$varbackpack[$i][3] = "INF";}
-$mostrar .= " - Durabilidade: ".$varbackpack[$i][3];*/
-$bpcodigo[$i] = "<a href=\"backpack.php?qual=$i\"><img src=\"layoutnovo/equipamentos/$pastadoslot".$varbackpack[$i][1].".gif\" width=\"34\" height=\"34\" hspace=\"0\" vspace=\"0\" border=\"0\" onmouseover=\"".$varbackpack[$i][0]."\" onmouseout=\"fecharexplic();\"  id=\"bp".$i."atr\"/></a>";}else{
-$bpcodigo[$i] = "<img src=\"images/gif.gif\" width=\"34\" height=\"34\" hspace=\"0\" vspace=\"0\" border=\"0\"/>";}
-}//fim for
 
-//Jutsu de busca html
-if ($userrow['jutsudebuscahtml'] == 1){
-$jutsudebuscahtml = "<a href=\"mainmsg.php?do2=usarjutsubusca\" id=\"adm\" title=\"Jutsu Ocular\">Jutsu de Busca</a><br>";
+// Backpack slots.
+for ($i = 1; $i < 5; $i ++) {
+    if ($userrow["bp".$i] != "None") {
+        $varbackpack[$i] = explode(",",$userrow["bp".$i]);
+        $pastadoslot = "";
+        if ($varbackpack[$i][2] > 3) {$pastadoslot = "drops/";}
+        if ($varbackpack[$i][3] == "X") {$varbackpack[$i][3] = "*";}
+        $varbackpack[$i][0] = conteudoexplic($varbackpack[$i][1], $varbackpack[$i][2], 'bp'.$i.'atr', $varbackpack[$i][3]);
+        if (!is_numeric($varbackpack[$i][1])) {$varbackpack[$i][1] .= $varbackpack[$i][2]; $pastadoslot = "";}
+        $bpcodigo[$i] = "<a href=\"backpack.php?qual=$i\"><img src=\"layoutnovo/equipamentos/$pastadoslot".$varbackpack[$i][1].".gif\" width=\"34\" height=\"34\" alt=\"Pack item $i\" onmouseover=\"".$varbackpack[$i][0]."\" onmouseout=\"fecharexplic();\" id=\"bp".$i."atr\"/></a>";
+    } else {
+        $bpcodigo[$i] = "<img src=\"images/gif.gif\" width=\"34\" height=\"34\" alt=\"Empty Pack slot\"/>";
+    }
 }
 
-//durabilidade
-$durabm = explode(",",$userrow["durabilidade"]);
-for ($i = 1; $i < 7; $i ++){
-if ($durabm[$i] == "X"){$durabm[$i] = "*";}
+$jutsudebuscahtml = "";
+if (($userrow['jutsudebuscahtml'] ?? 0) == 1) {
+    $jutsudebuscahtml = "<a href=\"mainmsg.php?do2=usarjutsubusca\" class=\"ss-side-link\" title=\"Search Art\">Search Art</a>";
 }
 
-//magiclist vazia
-if ($userrow["magiclist"] == "None"){$userrow["magiclist"] = "Nenhum Jutsu.";}
-
-//senjutsu olho
-if ($userrow["senjutsuhtml"] == "fechado"){
-	$olhosenjutsu = "<center><a href=\"senjutsu.php?do=usar\"><img src=\"images/olhos/".$userrow["senjutsuhtml"].".jpg\" border=\"0\" title=\"Ativar Senjutsu (1NP/3s)\"></a></center>";
-}elseif($userrow["senjutsuhtml"] == "senjutsu"){
-	include('funcoesinclusas.php');
-	senjutsu();
-	if ($userrow["currentnp"] == 0){$titulo = "Ativar Senjutsu (1NP/3s)";}else{$titulo = "Desativar Senjutsu";}
-	$olhosenjutsu = "<center><a href=\"senjutsu.php?do=cancelar\"><img src=\"images/olhos/".$userrow["senjutsuhtml"].".jpg\" border=\"0\" title=\"$titulo\"></a></center>";
-	
-
+$durabm = explode(",", (string)($userrow["durabilidade"] ?? ""));
+for ($i = 1; $i < 7; $i ++) {
+    if (!isset($durabm[$i])) { $durabm[$i] = "0"; }
+    if ($durabm[$i] == "X") {$durabm[$i] = "*";}
 }
 
-//atributo dos itens
-$armaatr = conteudoexplic($userrow["weaponid"], '1', 'armaatr', $durabm[1]);	
-$shieldatr = conteudoexplic($userrow["shieldid"], '3', 'shieldatr', $durabm[3]);	
-$armoratr = conteudoexplic($userrow["armorid"], '2', 'armoratr', $durabm[2]);	
-$slot1atr = conteudoexplic($userrow["slot1id"], '4', 'slot1atr', $durabm[4]);
-$slot2atr = conteudoexplic($userrow["slot2id"], '4', 'slot2atr', $durabm[5]);
-$slot3atr = conteudoexplic($userrow["slot3id"], '4', 'slot3atr', $durabm[6]);
+if (($userrow["magiclist"] ?? "") == "" || ($userrow["magiclist"] ?? "") == "None") {
+    $userrow["magiclist"] = "No Arts.";
+}
 
-//level bar
+$olhosenjutsu = "";
+$senjutsuhtml = $userrow["senjutsuhtml"] ?? "";
+if ($senjutsuhtml == "fechado") {
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=usar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Activate Essence Sight\" title=\"Activate Essence Sight (1NP/3s)\"></a>";
+} elseif ($senjutsuhtml == "senjutsu") {
+    include('funcoesinclusas.php');
+    senjutsu();
+    if (($userrow["currentnp"] ?? 0) == 0) {$titulo = "Activate Essence Sight (1NP/3s)";} else {$titulo = "Deactivate Essence Sight";}
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=cancelar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Essence Sight\" title=\"$titulo\"></a>";
+}
+
+$armaatr = conteudoexplic($userrow["weaponid"], '1', 'armaatr', $durabm[1] ?? '*');
+$shieldatr = conteudoexplic($userrow["shieldid"], '3', 'shieldatr', $durabm[3] ?? '*');
+$armoratr = conteudoexplic($userrow["armorid"], '2', 'armoratr', $durabm[2] ?? '*');
+$slot1atr = conteudoexplic($userrow["slot1id"], '4', 'slot1atr', $durabm[4] ?? '*');
+$slot2atr = conteudoexplic($userrow["slot2id"], '4', 'slot2atr', $durabm[5] ?? '*');
+$slot3atr = conteudoexplic($userrow["slot3id"], '4', 'slot3atr', $durabm[6] ?? '*');
+
 $lvlquery = doquery("SELECT ".$userrow['charclass']."_exp FROM {{table}} WHERE id='".$userrow['level']."'", "levels");
 $lvlquery2 = doquery("SELECT ".$userrow['charclass']."_exp FROM {{table}} WHERE id='".($userrow['level'] + 1)."'", "levels");
-$lvlrow = mysqli_fetch_array($lvlquery);
-$lvlrow2 = mysqli_fetch_array($lvlquery2);
-$xpproxlvl = $lvlrow2[$userrow['charclass']."_exp"] - $lvlrow[$userrow['charclass']."_exp"];
-$porcconcluida = floor((($userrow['experience']  - $lvlrow[$userrow['charclass']."_exp"]) * 100) / $xpproxlvl);
-$quantofaltaxp = $xpproxlvl - ($userrow['experience']  - $lvlrow[$userrow['charclass']."_exp"]);
+$lvlrow = mysqli_fetch_array($lvlquery) ?: array();
+$lvlrow2 = mysqli_fetch_array($lvlquery2) ?: array();
+$classExpKey = $userrow['charclass']."_exp";
+$xpCurrent = (int)($lvlrow[$classExpKey] ?? 0);
+$xpNext = (int)($lvlrow2[$classExpKey] ?? 0);
+$xpproxlvl = $xpNext - $xpCurrent;
+$porcconcluida = $xpproxlvl > 0 ? floor((($userrow['experience'] - $xpCurrent) * 100) / $xpproxlvl) : 0;
+$porcconcluida = max(0, min(100, $porcconcluida));
+$quantofaltaxp = max(0, $xpproxlvl - ($userrow['experience'] - $xpCurrent));
 $widthbar = round((155 * $porcconcluida)/100);
-$barrahtml = "<div style=\"display: block; width:160px; height:37px\" onmouseover=\"explicdrop('qualquer', 'Dados do Level', 'XP Atual: ".$userrow['experience']."<br>XP P/ Lvl Up: ".$quantofaltaxp."<br>Porc. Conclu&iacute;da: ".$porcconcluida."%','1','1');\" onmouseout=\"fecharexplic();\"><div style=\"position: relative; z-index: 2;text-align: left\"><img src=\"images/levelbarin.jpg\" width=\"$widthbar\" height=\"36\"></div><div style=\"position: relative; z-index:3; top: -37px\"><img src=\"images/levelbar.png\" id=\"qualquer\"></div><div style=\"position: relative; top: -67px; z-index: 4;font-size: 15px;left: -30px;font-family: arial;\"><b><font color=\"#452202\">".$userrow['level']."</font></b></div></div>";
+$barrahtml = "<div class=\"ss-levelbar\" onmouseover=\"explicdrop('qualquer', 'Standing Details', 'Current Insight: ".$userrow['experience']."<br>Insight P/ Standing Up: ".$quantofaltaxp."<br>Completion: ".$porcconcluida."%','1','1');\" onmouseout=\"fecharexplic();\"><div class=\"ss-levelbar__fill\" style=\"width:{$widthbar}px\"><img src=\"images/levelbarin.jpg\" width=\"$widthbar\" height=\"36\" alt=\"\"></div><img class=\"ss-levelbar__frame\" src=\"images/levelbar.png\" id=\"qualquer\" alt=\"Standing {$userrow['level']}\"><span class=\"ss-levelbar__level\">".$userrow['level']."</span></div>";
 
-
-
-
-//Segunda imagem da arma
-if (file_exists('layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif')){
-	$segundaarmaimagem = '<a href="desequipar.php?qual=1"><img src="layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif" border="0" onMouseOver="'.$armaatr.'" onmouseout="fecharexplic();" id="armaatr"></a>';
-}else{$segundaarmaimagem = '';}
-
-
-//erro que tava dando
+$segundaarmaimagem = '';
+if (file_exists('layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif')) {
+    $segundaarmaimagem = '<a href="desequipar.php?qual=1"><img src="layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif" alt="Secondary weapon" onmouseover="'.$armaatr.'" onmouseout="fecharexplic();" id="armaatr-secondary"></a>';
+}
 
 $template = <<<THEVERYENDOFYOU
-<br><br>
+<aside class="ss-sidebar" aria-label="Operative status and gear">
+  <section class="ss-side-card ss-player-card">
+    <div class="ss-side-card__header"><span class="ss-eyebrow">OPERATIVE</span><h2>{{charname}}</h2></div>
+    <div class="ss-player-card__avatar"><a href="outros.php?do=avatar"><img src="layoutnovo/avatares/{{avatar}}.jpg" alt="Choose avatar" title="Choose Avatar"></a>$olhosenjutsu</div>
+    $barrahtml
+    <div class="ss-statbars" title="Operative status">{{statbars}}</div>
+    <nav class="ss-side-nav">
+      <a href="javascript:mostrarchar('{{charname}}')">Operative Record</a>
+      <a href="outroseatributos.php?do=atributos">Attributes</a>
+      <a href="treinamentoequests.php?do=quests">Contracts</a>
+      <a href="treinamentoequests.php?do=treinamento">Discipline</a>
+    </nav>
+  </section>
 
-<div style="position:relative; width:204px">
-<div style="background-image: url(layoutnovo/buttons/personagem.png);height:97px;z-index:1"></div>
-<div style="z-index:0;background-image: url(layoutnovo/buttons/meio.png)">
-<div style="position:relative;padding-left:7px;padding-right:7px;top:-25px;z-index:2">
+  <section class="ss-side-card">
+    <div class="ss-side-card__header"><span class="ss-eyebrow">LOADOUT</span><h2>Gear</h2></div>
+    <div class="ss-equipment-grid">
+      <div class="ss-equipment-slot ss-equipment-slot--shield"><a href="desequipar.php?qual=3"><img src="layoutnovo/equipamentos/{{shieldid}}.gif" alt="{{shieldname}}" onmouseover="$shieldatr" onmouseout="fecharexplic();" id="shieldatr"></a></div>
+      <div class="ss-equipment-slot ss-equipment-slot--weapon"><a href="desequipar.php?qual=1"><img src="layoutnovo/equipamentos/{{weaponid}}.gif" alt="{{weaponname}}" onmouseover="$armaatr" onmouseout="fecharexplic();" id="armaatr"></a></div>
+      <div class="ss-equipment-slot ss-equipment-slot--secondary">$segundaarmaimagem</div>
+      <div class="ss-equipment-slot ss-equipment-slot--armor"><a href="desequipar.php?qual=2"><img src="layoutnovo/equipamentos/{{armorid}}.gif" alt="{{armorname}}" onmouseover="$armoratr" onmouseout="fecharexplic();" id="armoratr"></a></div>
+    </div>
+    <div class="ss-slot-row">
+      <a href="desequipar.php?qual=4"><img src="layoutnovo/equipamentos/drops/{{slot1id}}.gif" alt="{{slot1name}}" onmouseover="$slot1atr" onmouseout="fecharexplic();" id="slot1atr"></a>
+      <a href="desequipar.php?qual=5"><img src="layoutnovo/equipamentos/drops/{{slot2id}}.gif" alt="{{slot2name}}" onmouseover="$slot2atr" onmouseout="fecharexplic();" id="slot2atr"></a>
+      <a href="desequipar.php?qual=6"><img src="layoutnovo/equipamentos/drops/{{slot3id}}.gif" alt="{{slot3name}}" onmouseover="$slot3atr" onmouseout="fecharexplic();" id="slot3atr"></a>
+    </div>
+    <div class="ss-item-list">
+      <div><img src="images/icon_weapon.gif" alt="Weapon"><span>Weapon</span><b>{{weaponname}}</b><small>Durability: $durabm[1]</small></div>
+      <div><img src="images/icon_armor.gif" alt="Armor"><span>Armor</span><b>{{armorname}}</b><small>Durability: $durabm[2]</small></div>
+      <div><img src="images/icon_shield.gif" alt="Shield"><span>Shield</span><b>{{shieldname}}</b><small>Durability: $durabm[3]</small></div>
+      <div><img src="images/orb.gif" alt="Slot 1"><span>Slot 1</span><b>{{slot1name}}</b><small>Durability: $durabm[4]</small></div>
+      <div><img src="images/orb.gif" alt="Slot 2"><span>Slot 2</span><b>{{slot2name}}</b><small>Durability: $durabm[5]</small></div>
+      <div><img src="images/orb.gif" alt="Slot 3"><span>Slot 3</span><b>{{slot3name}}</b><small>Durability: $durabm[6]</small></div>
+    </div>
+  </section>
 
+  <section class="ss-side-card">
+    <div class="ss-side-card__header"><span class="ss-eyebrow">INVENTORY</span><h2>Pack</h2></div>
+    <a class="ss-backpack__image" href="backpack.php"><img src="images/{{bpimagem}}.jpg" alt="Open Pack"></a>
+    <div class="ss-backpack__slots">$bpcodigo[1]$bpcodigo[2]$bpcodigo[3]$bpcodigo[4]</div>
+  </section>
 
-
-<center><a href="outros.php?do=avatar"><img src="layoutnovo/avatares/{{avatar}}.jpg" border="0" title="Selecionar Avatar"></a><br>
-</center>$olhosenjutsu
-<center><font color="#452708"><b>{{charname}}</b></font>$barrahtml</center>
-<center><div onmouseover="explicdrop('qualquer', 'Barras de Status', '<center>' +
- '<div style=\'margin-top:0px;color:white;background-color:#780404;padding-top:3px;padding-left:3px;padding-right:3px;padding-bottom:3px;display:block\'>HP: {{currenthp}}/{{maxhp}}</div>' +
- '<div style=\'margin-top:0px;color:white;background-color:#024179;padding-top:3px;padding-left:3px;padding-right:3px;padding-bottom:3px;display:block\'>CH:  {{currentmp}}/{{maxmp}}</div>' +
-  '<div style=\'margin-top:0px;color:white;background-color:#766402;padding-top:3px;padding-left:3px;padding-right:3px;padding-bottom:3px;display:block\'>TP: {{currenttp}}/{{maxtp}}</div>' +
-   '<div style=\'margin-top:0px;color:white;background-color:#0d6504;padding-top:3px;padding-left:3px;padding-right:3px;padding-bottom:3px;display:block\'>NP: {{currentnp}}/{{maxnp}}</div>' +
-    '<div style=\'margin-top:0px;color:white;background-color:#6f0576;padding-top:3px;padding-left:3px;padding-right:3px;padding-bottom:3px;display:block\'>EP: {{currentep}}/{{maxep}}</div></center>',
-    '1','1')" onmouseout='fecharexplic();'>{{statbars}}</div></center>
-<ul>
-<div style="position:relative;left:-15px;">
-<li/><a href="javascript:mostrarchar('{{charname}}')">Todos os Status</a>
-<li/><a href="outroseatributos.php?do=atributos">Distribuir Pontos</a>
-<li/><a href="treinamentoequests.php?do=quests">Painel de Miss&otilde;es</a>
-<li/><a href="treinamentoequests.php?do=treinamento">Painel de Treinos</a></ul>
-</div>
-
-
-
-</div>
-</div>
-<div style="position:relative;top:-32px;z-index:1;background-image: url(layoutnovo/buttons/fim.png);height:51px;"></div>
-</div>
-
-
-
-
-
-<div style="position:relative; width:204px">
-<div style="background-image: url(layoutnovo/buttons/inventario.png);height:97px;z-index:1"></div>
-<div style="z-index:0;background-image: url(layoutnovo/buttons/meio.png)">
-<div style="position:relative;padding-left:7px;padding-right:7px;top:-25px;z-index:2">
-
-
-
-<center>
-<div style="position:relative;background-image:url(layoutnovo/equipamentos/equipamentos.png);width:168px;height:116px;background-repeat:no-repeat">
-<div style="position:absolute;top:14px;left:66px"><a href="desequipar.php?qual=3"><img src="layoutnovo/equipamentos/{{shieldid}}.gif" onMouseOver="$shieldatr" onmouseout="fecharexplic();" id="shieldatr" border="0"></a></div>
-<div style="position:absolute;top:52px;left:29px"><a href="desequipar.php?qual=1"><img src="layoutnovo/equipamentos/{{weaponid}}.gif" border="0" onMouseOver="$armaatr" onmouseout="fecharexplic();" id="armaatr"></a></div>
-<div style="position:absolute;top:52px;left:103px">$segundaarmaimagem</div>
-<div style="position:absolute;top:52px;left:66px"><a href="desequipar.php?qual=2"><img src="layoutnovo/equipamentos/{{armorid}}.gif" border="0" onMouseOver="$armoratr" onmouseout="fecharexplic();" id="armoratr"></a></div>
-</div>
-
-
-
-<table border="5" cellspacing="0" 
-cellpadding="0" background="layoutnovo/equipamentos/drops/fundo.png" style="background-repeat:no-repeat;;background-position:left top" width="128">
-<tr height="3"></tr>
-<tr><td height="34" style="width: 0px;"></td><td background="layoutnovo/equipamentos/drops/{{slot1id}}.gif" width="37" style="background-repeat:no-repeat;background-position:left top" ><a href="desequipar.php?qual=4"><img src="images/gif30.gif" onMouseOver="$slot1atr" onmouseout="fecharexplic();" id="slot1atr" border="0"></a></td><td background="layoutnovo/equipamentos/drops/{{slot2id}}.gif" width="37" style="background-repeat:no-repeat;background-position:left top"><a href="desequipar.php?qual=5"><img src="images/gif30.gif" onMouseOver="$slot2atr" onmouseout="fecharexplic();" id="slot2atr" border="0"></a></td><td background="layoutnovo/equipamentos/drops/{{slot3id}}.gif" width="35" style="background-repeat:no-repeat;background-position:left top"><a href="desequipar.php?qual=6"><img src="images/gif30.gif" onMouseOver="$slot3atr" onmouseout="fecharexplic();" id="slot3atr" border="0"></a></td><td></td></tr>
-<tr height="4"><td colspan="7"></td></tr>
-</table>
-</center>
-
-<table width="178">
-<tr><td><img src="images/icon_weapon.gif" alt="Arma" title="Durabilidade: $durabm[1]" /></td><td width="100%">Arma: {{weaponname}}</td></tr>
-<tr><td><img src="images/icon_armor.gif" alt="Colete" title="Durabilidade: $durabm[2]" /></td><td width="100%">Colete: {{armorname}}</td></tr>
-<tr><td><img src="images/icon_shield.gif" alt="Bandana" title="Durabilidade: $durabm[3]" /></td><td width="100%">Bandana: {{shieldname}}</td></tr>
-<tr><td><img src="images/orb.gif" alt="Item Adicional" title="Durabilidade: $durabm[4]" /></td><td width="100%">Slot 1: {{slot1name}}</td></tr>
-<tr><td><img src="images/orb.gif" alt="Item Adicional" title="Durabilidade: $durabm[5]" /></td><td width="100%">Slot 2: {{slot2name}}</td></tr>
-<tr><td><img src="images/orb.gif" alt="Item Adicional" title="Durabilidade: $durabm[6]" /></td><td width="100%">Slot 3: {{slot3name}}</td></tr>
-</table>
-
-
-
-
-
-
-</div>
-</div>
-<div style="position:relative;top:-32px;z-index:1;background-image: url(layoutnovo/buttons/fim.png);height:51px;"></div>
-</div>
-
-
-
-
-
-
-
-<div style="position:relative; width:204px">
-<div style="background-image: url(layoutnovo/buttons/mochila.png);height:97px;z-index:1"></div>
-<div style="z-index:0;background-image: url(layoutnovo/buttons/meio.png)">
-<div style="position:relative;padding-left:7px;padding-right:7px;top:-25px;z-index:2">
-
-
-
-
-<center><a href="javascript: menudrop('bp', 'Titulo', 'Testando conteudo', '1', '1')" ><img src="images/{{bpimagem}}.jpg" border="0" id="bp"></a><br>
-<table border="0" cellpadding="0" cellspacing="0" width="170" height="10" background="images/bpslots.jpg">
-<tr><td height="7" colspan="6"></td></tr>
-<tr><td width="12"></td><td width="34" height="34">$bpcodigo[1]</td><td width="34" height="34">$bpcodigo[2]</td><td width="34" height="34">$bpcodigo[3]</td><td width="34" height="34">$bpcodigo[4]</td><td width="12"></td></tr>
-</table>
-</center>
-
-
-</div>
-</div>
-<div style="position:relative;top:-32px;z-index:1;background-image: url(layoutnovo/buttons/fim.png);height:51px;"></div>
-</div>
-
-
-
-
-
-
-<div style="position:relative; width:204px">
-<div style="background-image: url(layoutnovo/buttons/jutsus.png);height:97px;z-index:1"></div>
-<div style="z-index:0;background-image: url(layoutnovo/buttons/meio.png)">
-<div style="position:relative;padding-left:7px;padding-right:7px;top:-25px;z-index:2">
-
-
-<center><img src="layoutnovo/menuslados/jutsu.png"></center>
-$jutsudebuscahtml
-{{magiclist}}
-</div>
-</div>
-<div style="position:relative;top:-32px;z-index:1;background-image: url(layoutnovo/buttons/fim.png);height:51px;"></div>
-</div>
+  <section class="ss-side-card">
+    <div class="ss-side-card__header"><span class="ss-eyebrow">ARTS</span><h2>Arts</h2></div>
+    <div class="ss-technique-icon"><img src="layoutnovo/menuslados/jutsu.png" alt="Arts"></div>
+    $jutsudebuscahtml
+    <div class="ss-technique-list">{{magiclist}}</div>
+  </section>
+</aside>
 THEVERYENDOFYOU;
 ?>

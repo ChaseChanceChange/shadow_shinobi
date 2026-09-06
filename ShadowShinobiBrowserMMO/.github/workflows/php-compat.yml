@@ -1,0 +1,124 @@
+name: PHP compatibility
+
+on:
+  push:
+    branches: [main, modernize-safe-pass]
+  pull_request:
+    branches: [main]
+
+jobs:
+  php-lint:
+    runs-on: ubuntu-latest
+    container: php:8.2-cli
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Lint active game sources
+        shell: sh
+        run: |
+          find 'ShadowShinobiBrowserMMO/src/0-August-2018(latest)' -type f -name '*.php' -print0 \
+            | xargs -0 -n1 php -l
+
+  docker-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Validate Compose configuration
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' config
+
+      - name: Build and start full stack
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' up -d --build
+
+      - name: Verify database service
+        run: |
+          set -euo pipefail
+          for i in {1..20}; do
+            if docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' exec -T db mariadb \
+              -u shadow -pshadow_dev_password shadow_shinobi \
+              -e "SELECT COUNT(*) AS table_count FROM information_schema.tables WHERE table_schema='shadow_shinobi';"; then
+              exit 0
+            fi
+            sleep 2
+          done
+          echo 'Database did not accept a SQL connection after startup.'
+          exit 1
+
+      - name: Verify public pages are clean
+        run: |
+          set -euo pipefail
+          check_page() {
+            url="$1"
+            output="$2"
+            for i in {1..30}; do
+              if curl --fail --silent --show-error -L "$url" > "$output"; then
+                break
+              fi
+              sleep 2
+            done
+            test -s "$output"
+            if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' "$output"; then
+              echo "Runtime error text found in $url"
+              return 1
+            fi
+          }
+          check_page 'http://127.0.0.1:8080/login.php?do=login' /tmp/login.html
+          check_page 'http://127.0.0.1:8080/help.php' /tmp/help.html
+          check_page 'http://127.0.0.1:8080/rank.php' /tmp/rank.html
+
+      - name: Verify rendered JavaScript syntax
+        run: |
+          set -euo pipefail
+          python - <<'PY'
+          import re
+          from pathlib import Path
+
+          html = Path('/tmp/help.html').read_text(encoding='utf-8', errors='replace')
+          scripts = re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', html, flags=re.I | re.S)
+          if not scripts:
+              raise SystemExit('No inline JavaScript blocks found in rendered help page')
+          Path('/tmp/rendered-page.js').write_text('\n\n'.join(scripts), encoding='utf-8')
+          print(f'Extracted {len(scripts)} inline script block(s)')
+          PY
+          node --check /tmp/rendered-page.js
+
+      - name: Verify developer diagnostics and login
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error http://127.0.0.1:8080/dev_health.php > /tmp/dev-health.html
+          grep -q 'Core checks passing' /tmp/dev-health.html
+          curl --fail --silent --show-error -L -c /tmp/shadow.cookies -b /tmp/shadow.cookies \
+            'http://127.0.0.1:8080/login.php?do=dev' > /tmp/dev-login.html
+          test -s /tmp/dev-login.html
+          if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' /tmp/dev-login.html; then
+            echo 'Runtime error text found after developer login'
+            exit 1
+          fi
+          grep -q 'Shadow Shinobi' /tmp/dev-login.html
+
+      - name: Verify authenticated shell pages
+        run: |
+          set -euo pipefail
+          declare -A pages=(
+            [home]='http://127.0.0.1:8080/index.php'
+            [backpack]='http://127.0.0.1:8080/backpack.php'
+            [character]='http://127.0.0.1:8080/index.php?do=showchar'
+          )
+          for name in "${!pages[@]}"; do
+            output="/tmp/${name}.html"
+            curl --fail --silent --show-error -b /tmp/shadow.cookies "${pages[$name]}" > "$output"
+            if grep -Eqi 'Warning:|Deprecated:|Notice:|Fatal error:|Parse error:|Uncaught ' "$output"; then
+              echo "Runtime error text found in ${pages[$name]}"
+              exit 1
+            fi
+          done
+
+      - name: Dump logs on failure
+        if: failure()
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' logs --no-color
+
+      - name: Shut down stack
+        if: always()
+        run: docker compose -f 'ShadowShinobiBrowserMMO/docker-compose.yml' down -v
