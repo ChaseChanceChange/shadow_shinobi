@@ -40,6 +40,7 @@ services:
       - ./database (sql)/migrations/001_shadow_identity.sql:/docker-entrypoint-initdb.d/02-shadow-001.sql:ro
       - ./database (sql)/migrations/002_shadow_content_cleanup.sql:/docker-entrypoint-initdb.d/03-shadow-002.sql:ro
       - ./database (sql)/migrations/003_shadow_final_identity.sql:/docker-entrypoint-initdb.d/04-shadow-003.sql:ro
+      - ./database (sql)/migrations/004_shadow_defaults.sql:/docker-entrypoint-initdb.d/05-shadow-004.sql:ro
   db-admin:
     image: phpmyadmin:5-apache
     depends_on:
