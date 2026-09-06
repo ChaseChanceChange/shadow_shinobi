@@ -5,3 +5,8 @@
 .DS_Store
 .idea/
 .vscode/
+
+# Local asset board workspace (generated board + personal candidates)
+assets-work/board/
+assets-work/*.json
+**/*.bak
