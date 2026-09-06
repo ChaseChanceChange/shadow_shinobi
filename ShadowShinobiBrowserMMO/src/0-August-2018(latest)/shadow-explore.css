@@ -1,0 +1,142 @@
+/* Shadow Shinobi exploration presentation layer.
+   Targets the legacy exploration markup without changing movement/combat/database logic. */
+
+/* Replace the legacy exploration title artwork with a native command-deck header. */
+body td:has(img[src*="title_exploring"]){
+  padding:0 0 14px !important;
+  text-align:left !important;
+}
+body td:has(img[src*="title_exploring"]) > img[src*="title_exploring"]{
+  display:none !important;
+}
+body td:has(img[src*="title_exploring"])::before{
+  content:"FIELD EXPLORATION";
+  display:block;
+  padding:12px 15px 4px;
+  color:#edf2f7;
+  font-size:1.08rem;
+  font-weight:800;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+}
+body td:has(img[src*="title_exploring"])::after{
+  content:"SECTOR SURVEY // MOVEMENT ACTIVE // WATCH FOR CONTACT";
+  display:block;
+  padding:0 15px 11px;
+  color:#98a4b2;
+  font-size:.68rem;
+  letter-spacing:.12em;
+  text-transform:uppercase;
+  border-bottom:1px solid #303947;
+}
+
+/* Hide the old decorative avatar frame while retaining the operative image. */
+body td:has(img[src*="layoutnovo/graficos/fundo2.png"]){
+  min-width:220px;
+  padding:14px !important;
+  text-align:center;
+  background:linear-gradient(180deg,#171d26,#0d1218) !important;
+  border:1px solid #303947 !important;
+  border-radius:10px;
+}
+body td:has(img[src*="layoutnovo/graficos/fundo2.png"]) table{
+  width:100% !important;
+  height:auto !important;
+  background:none !important;
+}
+body td:has(img[src*="layoutnovo/graficos/fundo2.png"]) img[src*="layoutnovo/graficos/fundo2.png"]{
+  display:none !important;
+}
+body td:has(img[src*="layoutnovo/graficos/fundo2.png"]) img[src*="_run.gif"]{
+  width:150px;
+  height:150px;
+  max-width:150px;
+  object-fit:cover;
+  border:1px solid #4e5968;
+  border-radius:10px;
+  background:#07090d;
+  box-shadow:0 14px 28px rgba(0,0,0,.28);
+}
+
+/* Turn the exploration option and nearby-operative blocks into modern panels. */
+body td:has(a[href*="encherhp.php"]){
+  padding:12px !important;
+  background:linear-gradient(180deg,#171d26,#0e1319) !important;
+  border:1px solid #303947 !important;
+  border-radius:9px;
+}
+body td:has(a[href*="encherhp.php"]) img{
+  width:28px;
+  height:28px;
+  object-fit:contain;
+  margin:2px;
+  padding:4px;
+  background:#151b23;
+  border:1px solid #3b4552;
+  border-radius:6px;
+}
+body td:has(a[href*="encherhp.php"]) a:hover img{
+  transform:translateY(-1px);
+  filter:brightness(1.15);
+}
+
+/* Old brown section headers become Shadow Shinobi section bars. */
+body td:has(a[href*="mostrarjogadores"]),
+body td:has(a[href*="mostrarjogadores"]) > table{
+  border-radius:8px;
+}
+body td:has(a[href*="mostrarjogadores"]) a img{
+  opacity:.75;
+}
+
+/* Exploration chat: remove the legacy brown strip and establish a tactical comms panel. */
+body table:has(form[action*="chat.php?do=chatmap"]){
+  width:100% !important;
+}
+body form[action*="chat.php?do=chatmap"]{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  width:min(100%,680px);
+  margin:10px auto 0 !important;
+  padding:10px;
+  background:#0b0f15;
+  border:1px solid #303947;
+  border-radius:8px;
+}
+body form[action*="chat.php?do=chatmap"] input[name="fala"]{
+  flex:1;
+  width:auto !important;
+  min-width:0;
+  margin:0 !important;
+}
+body form[action*="chat.php?do=chatmap"] input[type="submit"]{
+  width:auto !important;
+  min-width:72px;
+  min-height:36px;
+  padding:7px 13px !important;
+  margin:0 !important;
+}
+
+/* The legacy exploration sentence becomes a quiet HUD status line. */
+body td:has(form[action*="chat.php?do=chatmap"]) {
+  color:#c0c8d1;
+}
+
+@media (max-width:720px){
+  body td:has(img[src*="layoutnovo/graficos/fundo2.png"]){
+    min-width:0;
+  }
+  body td:has(img[src*="layoutnovo/graficos/fundo2.png"]) img[src*="_run.gif"]{
+    width:110px;
+    height:110px;
+    max-width:110px;
+  }
+  body form[action*="chat.php?do=chatmap"]{
+    flex-direction:column;
+    align-items:stretch;
+  }
+  body form[action*="chat.php?do=chatmap"] input[type="submit"]{
+    width:100% !important;
+  }
+}
