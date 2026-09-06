@@ -3,7 +3,8 @@
 -- Internal schema/field names remain unchanged for compatibility.
 
 ALTER TABLE dk_users
-  MODIFY graduacao varchar(30) NOT NULL DEFAULT 'Initiate';
+  MODIFY graduacao varchar(30) NOT NULL DEFAULT 'Initiate',
+  MODIFY caixadepm text NOT NULL DEFAULT '';
 
 UPDATE dk_control
 SET
