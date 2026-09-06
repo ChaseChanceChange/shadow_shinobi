@@ -47,7 +47,7 @@ $template = <<<THEVERYENDOFYOU
   $devlogin
 
   <div class="ss-login__links">
-    <p>New to Shadow Shinobi? <a href="users.php?do=register">Create your operative.</a></p>
+    <p>New to Shadow Shinobi? <a href="register.php">Create your operative.</a></p>
     <p><a href="users.php?do=changepassword">Change your password</a> · <a href="users.php?do=lostpassword">Recover a lost password</a></p>
     <p>Registered but missing your confirmation email? <a href="ativarconta.php">Activate your account</a>.</p>
   </div>
