@@ -112,8 +112,10 @@ function register_account() {
     // mail service is required to create a usable local development account.
     $verifycode = '1';
 
+    // id is AUTO_INCREMENT and caixadepm is a required legacy field without
+    // a guaranteed default on older persistent development databases.
     $query = doquery(
-        "INSERT INTO {{table}} SET id='',regdate=NOW(),verify='$verifycode',username='$usernameEscaped',password='$password',email='$emailEscaped',charname='$charnameEscaped',charclass='$charclass',difficulty='$difficulty'",
+        "INSERT INTO {{table}} SET regdate=NOW(),verify='$verifycode',username='$usernameEscaped',password='$password',email='$emailEscaped',charname='$charnameEscaped',charclass='$charclass',difficulty='$difficulty',caixadepm=''",
         'users'
     );
 
