@@ -1,56 +1,42 @@
 # Shadow Shinobi Terminology Bible
 
-This document defines the player-facing vocabulary for the conversion from the original Naruto-themed browser MMO into Shadow Shinobi.
+This document defines the canonical player-facing vocabulary for Shadow Shinobi.
 
 ## Conversion rule
 
-The first conversion pass changes fiction and language, not the underlying engine. Database IDs, table names, route names, combat formulas, and internal field names remain unchanged unless a later migration explicitly requires otherwise.
+The current modernization pass changes fiction and language first while preserving the underlying game engine. Database IDs, table names, route names, combat formulas, and internal field names remain unchanged unless a dedicated migration later changes them.
 
-Player-facing text should never require the original franchise terminology to make sense.
+Player-facing content must stand on its own without requiring knowledge of the source project's original franchise terminology.
 
-## Core vocabulary
+## Canonical vocabulary
 
 | Legacy concept | Shadow Shinobi term | Usage |
 |---|---|---|
-| Ninja | Shinobi | Generic player profession |
-| Jutsu / Technique | Art | A learned combat or utility ability |
+| Ninja | Operative | Individual player-controlled field agent |
+| Shinobi | Shadow Shinobi | World identity / factional descriptor; not the default noun for a player |
+| Jutsu / Technique | Art | Learned combat or utility ability |
 | Chakra | Essence | Primary supernatural resource |
 | Village | Enclave | Major settled faction/location |
-| Kage / village leader | Warden | Leader title; singular title can vary by faction |
-| Mission / Quest | Contract | A task accepted by the player |
+| Kage / village leader | Warden | Leader title |
+| Mission / Quest | Contract | Task accepted by an operative |
 | Training | Discipline | Character improvement activity |
-| Rank | Standing | Player progression tier |
+| Rank / Level | Standing | Progression tier shown to players |
+| Experience | Insight | Progress toward the next Standing |
 | Duel | Challenge | Formal player-versus-player encounter |
-| Monster / enemy | Threat | Generic hostile target |
+| Monster / Enemy | Threat | Hostile target |
 | Drop | Recovery | Material or item recovered from a defeated threat |
 | Inventory / Backpack | Pack | Player-held item storage |
 | Equipment | Gear | Weapons, armor, shields, and special slots |
-| Gold / Ryou | Coin | Player currency; exact final name remains provisional |
+| Gold / Ryou | Coin | Player currency |
 | Map | World Map | Geographic navigation |
-| Town | Settlement | Neutral/general location label |
+| Town | Settlement | General inhabited location |
 | Alchemy | Refinement | Combining or improving materials/items |
 | Bank | Vault | Stored currency/item service |
 | Global chat | Open Channel | World-wide social chat |
-| Map chat | Local Channel | Area-specific chat |
+| Map chat | Local Channel | Area-specific social chat |
 | Character sheet | Operative Record | Character information screen |
-| Experience | Insight | Progress toward the next Standing |
-| Level | Standing | Numerical progression represented to players as a rank/standing |
 
-## Terms deliberately not fixed yet
-
-The following remain provisional so the game design can determine them from the lore instead of forcing names early:
-
-- Final currency name
-- Final names for the three legacy classes
-- Final rank ladder
-- Faction-specific leader titles
-- Name of the supernatural source behind Essence
-- Name for special passive systems such as Senjutsu
-- Name for tracking/search abilities
-
-## Writing style
-
-Shadow Shinobi uses concise, slightly mysterious language rather than direct anime terminology.
+## Standard action language
 
 Prefer:
 
@@ -60,11 +46,21 @@ Prefer:
 >
 > Develop Discipline
 >
+> Channel Essence
+>
 > Spend Insight
 >
 > Recover material
 >
 > Challenge Operative
+>
+> Open Pack
+>
+> Open Vault
+>
+> View Operative Record
+>
+> Enter the World Map
 
 Avoid:
 
@@ -75,10 +71,24 @@ Avoid:
 > Become a Kage
 >
 > Complete Ninja Mission
+>
+> Check Backpack
 
-## Mechanical compatibility
+## English-only presentation
 
-The following internal identifiers remain valid during the conversion and should not be renamed merely for aesthetics:
+Player-facing pages should render in English. Existing Portuguese strings are being translated/rethemed through the centralized player-language layer while individual legacy source files are progressively retired or renamed.
+
+No new Portuguese text should be introduced.
+
+## Franchise terminology policy
+
+Do not introduce the original franchise's named characters, named villages, signature creatures, clans, trademark terminology, or copied plot events into new player-facing content.
+
+Legacy data may still contain historical values or internal identifiers. Those are compatibility concerns and are not part of the player-facing vocabulary.
+
+## Compatibility boundary
+
+The following internal identifiers remain valid during the transition:
 
 - `dk_users`
 - `dk_towns`
@@ -89,8 +99,9 @@ The following internal identifiers remain valid during the conversion and should
 - `dk_spells`
 - existing `do=` routes
 - existing combat/action state values
+- legacy PHP function and file names until their replacements are fully wired
 
-A future refactor may introduce cleaner engine-facing names, but that is a separate engineering project.
+Renaming these mechanically would create unnecessary breakage and is a separate refactor.
 
 ## Content conversion principle
 
@@ -106,8 +117,8 @@ Shadow Shinobi:
 
 > Develop a restorative Art that draws Essence back into the body.
 
-The mechanic remains recognizable to the engine while the fiction becomes original.
+The mechanic stays compatible with the existing engine while the fiction becomes Shadow Shinobi.
 
 ## Canon status
 
-This is the **v0.1 terminology set**. New content should use these terms unless a future lore decision supersedes one of them. Superseded terms should remain documented rather than silently changed, so database content and future AI-generated content can be audited.
+This is the **v0.2 canonical terminology set**. New UI, documentation, assets, and content should follow it. Superseded legacy terminology remains documented only to support migration and auditing.
