@@ -8,7 +8,7 @@ $controlrow = mysqli_fetch_array($controlquery);
 
 
 
-$nomechar = $_GET['nomechar'];
+$nomechar = isset($_GET['nomechar']) && $_GET['nomechar'] !== '' ? $_GET['nomechar'] : ($_GET['namechar'] ?? '');
 
 
 
@@ -28,7 +28,7 @@ $nomechar = $_GET['nomechar'];
     } else { $userrow["plusexp"] = ""; }
     if ($userrow["goldbonus"] > 0) { 
         $userrow["plusgold"] = "<span class=\"light\">(+".$userrow["goldbonus"]."%)</span>"; 
-    } elseif ($userrow["goldbonus"] < 0) { 
+    } elseif ($userrow["goldbonus"] < 0) {
         $userrow["plusgold"] = "<span class=\"light\">(".$userrow["goldbonus"]."%)</span>";
     } else { $userrow["plusgold"] = ""; }
     
