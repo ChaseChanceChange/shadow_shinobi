@@ -3,11 +3,12 @@
  * Global player-language output boundary.
  *
  * This file runs before legacy entry points. It preserves the existing PHP 8
- * compatibility prepend, catches old HTML-entity encoded Portuguese, and
- * removes remaining legacy presentation markers before the Shadow pass.
+ * compatibility prepend, normalizes legacy HTML-entity and mojibake Portuguese,
+ * and removes remaining legacy presentation markers before the Shadow pass.
  */
 require_once __DIR__ . '/legacy_compat.php';
 require_once __DIR__ . '/i18n.php';
+require_once __DIR__ . '/legacy_player_cleanup.php';
 
 ob_start(function ($buffer) {
     // The legacy admin renderer may gzip its output. Never reinterpret binary data.
@@ -37,11 +38,11 @@ ob_start(function ($buffer) {
     );
 
     $buffer = strtr($buffer, $entityMap);
+    $buffer = legacy_player_cleanup($buffer);
 
-    // Legacy source contains both UTF-8 text and older mojibake/unaccented text.
-    // Normalize common player-facing messages before the canonical terminology pass.
+    // Normalize additional legacy messages while keeping gameplay internals intact.
     $legacyMessages = array(
-        '/Voc[\xC3\xA9?]\\s+nao\\s+pode\\s+fazer\\s+nenhum\\s+movimento\\s+enquanto\\s+estiver\\s+em\\s+um\\s+duelo/i' => 'You cannot move while a Challenge is active',
+        '/Voc[\\xC3\\xA9?]\\s+nao\\s+pode\\s+fazer\\s+nenhum\\s+movimento\\s+enquanto\\s+estiver\\s+em\\s+um\\s+duelo/i' => 'You cannot move while a Challenge is active',
         '/Voce\\s+nao\\s+pode\\s+fazer\\s+nenhum\\s+movimento\\s+enquanto\\s+estiver\\s+em\\s+um\\s+duelo/i' => 'You cannot move while a Challenge is active',
         '/Voce\\s+so\\s+pode\\s+acessar\\s+essa\\s+funcao\\s+dentro\\s+de\\s+uma\\s+cidade/i' => 'This service is only available inside a Settlement',
         '/Voc[\\xC3\\xA9?]\\s+so\\s+pode\\s+acessar\\s+essa\\s+funcao\\s+dentro\\s+de\\s+uma\\s+cidade/i' => 'This service is only available inside a Settlement',
