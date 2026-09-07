@@ -8,9 +8,22 @@ if (isset($_COOKIE['dkgame']) && is_string($_COOKIE['dkgame'])) {
     $GLOBALS['_SS_RAW_DKGAME'] = $_COOKIE['dkgame'];
 }
 
-// Canonical English helper. Legacy personagemgeral() remains available only
-// through its compatibility shim and is no longer the maintained implementation.
-require_once __DIR__ . '/operative_dialogue_helper.php';
+// The maintained implementation is English-first, but the active legacy
+// pages still call the historical entry point. Load the shim, which in turn
+// loads renderOperativeDialogue().
+require_once __DIR__ . '/personagemgeral.php';
+
+// Some legacy templates expect this item-hover helper to exist globally.
+// The original helper was not part of the current active include chain, so
+// provide a safe compatibility fallback until that legacy presentation layer
+// is fully retired. Returning an empty handler preserves page functionality
+// without inventing item data or executing unsafe JavaScript.
+if (!function_exists('conteudoexplic')) {
+    function conteudoexplic($itemId, $itemType, $targetId, $durability = ''): string
+    {
+        return '';
+    }
+}
 
 $legacyGetDefaults = [
     'do2',
