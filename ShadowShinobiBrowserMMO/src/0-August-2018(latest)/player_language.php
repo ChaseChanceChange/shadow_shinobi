@@ -41,7 +41,7 @@ ob_start(function ($buffer) {
     // Remove legacy franchise-specific presentation hooks and branding from
     // the player response without renaming internal compatibility code yet.
     $buffer = preg_replace(
-        '#<img\\b[^>]*\\bsrc=["\\\'](?:[^"\\\']*/)?images/naruto\\.jpg["\\\'][^>]*>#i',
+        '#<img[^>]+naruto[.]jpg[^>]*>#i',
         '',
         $buffer
     );
