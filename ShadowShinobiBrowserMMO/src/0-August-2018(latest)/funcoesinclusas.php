@@ -5,6 +5,40 @@ $bla = tempojutsu($var, $var2, 120);
 echo $bla;*/
 
 
+if (!function_exists('browser')) {
+    /**
+     * Legacy user-agent helper used by display() for IE padding quirks.
+     * Returns a short browser family label; only the IE branch is special-cased.
+     */
+    function browser()
+    {
+        $ua = isset($_SERVER['HTTP_USER_AGENT']) ? (string)$_SERVER['HTTP_USER_AGENT'] : '';
+        if ($ua === '') {
+            return 'Unknown';
+        }
+        if (stripos($ua, 'MSIE') !== false || stripos($ua, 'Trident/') !== false) {
+            return 'Internet Explorer (MSIE/Compatible)';
+        }
+        if (stripos($ua, 'Edg/') !== false || stripos($ua, 'Edge/') !== false) {
+            return 'Microsoft Edge';
+        }
+        if (stripos($ua, 'Firefox/') !== false) {
+            return 'Mozilla Firefox';
+        }
+        if (stripos($ua, 'Chrome/') !== false || stripos($ua, 'CriOS/') !== false) {
+            return 'Google Chrome';
+        }
+        if (stripos($ua, 'Safari/') !== false) {
+            return 'Safari';
+        }
+        if (stripos($ua, 'Opera') !== false || stripos($ua, 'OPR/') !== false) {
+            return 'Opera';
+        }
+        return 'Other';
+    }
+}
+
+
 if (!function_exists('iconeitemmochila')){
 function iconeitemmochila($array, &$img, &$dur){
 	$img = "orb_img";
