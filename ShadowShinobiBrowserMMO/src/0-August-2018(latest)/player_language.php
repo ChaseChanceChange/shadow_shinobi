@@ -128,6 +128,25 @@ ob_start(function ($buffer) {
         $buffer
     );
 
-    return ui_en($buffer);
+    // ui_en() can partially translate an old sentence into a mixed-language
+    // string. Normalize those final rendered forms after the central pass.
+    $buffer = ui_en($buffer);
+    $finalOutputMap = array(
+        'Você está exploring o world map, nothing happened. Continue exploring usando os movement controls ou o Travel menu.' => 'You are exploring the world map, nothing happened. Continue exploring with the movement controls or the Travel menu.',
+        'Você está exploring o world map, nothing happened. Continue exploring using os movement controls ou o Travel menu.' => 'You are exploring the world map, nothing happened. Continue exploring with the movement controls or the Travel menu.',
+        'You are exploring the world map, nothing happened. Continue exploring usando os movement controls ou o Travel menu.' => 'You are exploring the world map, nothing happened. Continue exploring with the movement controls or the Travel menu.',
+        'O jogador Flamero est? te chamando para realizar uma troca.' => 'Operative Flamero is inviting you to trade.',
+        'O jogador Flamero está te chamando para realizar uma troca.' => 'Operative Flamero is inviting you to trade.',
+        'O operative Flamero est? te chamando para realizar uma troca.' => 'Operative Flamero is inviting you to trade.',
+        'O operative Flamero está te chamando para realizar uma troca.' => 'Operative Flamero is inviting you to trade.',
+        'Realizar uma Troca' => 'Trade',
+        'Realizar um Duelo' => 'Challenge',
+        'Abrir Chat Global' => 'Open Channel',
+        'Visualizar um Operative Record' => 'View Operative Record',
+        'Abrir o F&oacute;rum In-Game' => 'Open In-Game Forum',
+    );
+    $buffer = strtr($buffer, $finalOutputMap);
+
+    return $buffer;
 });
 ?>
