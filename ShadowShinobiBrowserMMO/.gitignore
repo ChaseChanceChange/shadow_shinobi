@@ -5,6 +5,12 @@
 .DS_Store
 .idea/
 .vscode/
+backpack.html
+help.html
+home.html
+login.html
+rank.html
+showchar.html
 
 # Local asset board workspace (generated board + personal candidates)
 assets-work/board/

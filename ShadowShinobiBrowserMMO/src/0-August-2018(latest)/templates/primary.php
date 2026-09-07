@@ -77,8 +77,7 @@ $template = <<<THEVERYENDOFYOU
   <header class="ss-header">
     <div class="ss-header__brand">
       <a href="index.php" class="ss-brand-link" aria-label="Shadow Shinobi home">
-        <span class="ss-brand-mark">SS</span>
-        <span><strong>SHADOW SHINOBI</strong><small>Browser MMO</small></span>
+        <img src="images/shadow_shinobi_banner.jpg" alt="Shadow Shinobi · Browser MMO" class="ss-header__banner-img" />
       </a>
     </div>
     <nav class="ss-header__nav" aria-label="Primary navigation">
