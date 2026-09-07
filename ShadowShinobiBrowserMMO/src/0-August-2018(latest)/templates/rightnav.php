@@ -35,12 +35,12 @@ if (($userrow["magiclist"] ?? "") == "" || ($userrow["magiclist"] ?? "") == "Non
 $olhosenjutsu = "";
 $senjutsuhtml = $userrow["senjutsuhtml"] ?? "";
 if ($senjutsuhtml == "fechado") {
-    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=usar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Activate Essence Sight\" title=\"Activate Essence Sight (1NP/3s)\"></a>";
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"essence-discipline.php?do=usar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Activate Essence Sight\" title=\"Activate Essence Sight (1NP/3s)\"></a>";
 } elseif ($senjutsuhtml == "senjutsu") {
     include('funcoesinclusas.php');
     senjutsu();
     if (($userrow["currentnp"] ?? 0) == 0) {$titulo = "Activate Essence Sight (1NP/3s)";} else {$titulo = "Deactivate Essence Sight";}
-    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"senjutsu.php?do=cancelar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Essence Sight\" title=\"$titulo\"></a>";
+    $olhosenjutsu = "<a class=\"ss-side-focus\" href=\"essence-discipline.php?do=cancelar\"><img src=\"images/olhos/".$senjutsuhtml.".jpg\" alt=\"Essence Sight\" title=\"$titulo\"></a>";
 }
 
 $armaatr = conteudoexplic($userrow["weaponid"], '1', 'armaatr', $durabm[1] ?? '*');
@@ -66,36 +66,36 @@ $barrahtml = "<div class=\"ss-levelbar\" onmouseover=\"explicdrop('qualquer', 'S
 
 $segundaarmaimagem = '';
 if (file_exists('layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif')) {
-    $segundaarmaimagem = '<a href="desequipar.php?qual=1"><img src="layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif" alt="Secondary weapon" onmouseover="'.$armaatr.'" onmouseout="fecharexplic();" id="armaatr-secondary"></a>';
+    $segundaarmaimagem = '<a href="unequip.php?qual=1"><img src="layoutnovo/equipamentos/'.$userrow['weaponid'].'d.gif" alt="Secondary weapon" onmouseover="'.$armaatr.'" onmouseout="fecharexplic();" id="armaatr-secondary"></a>';
 }
 
 $template = <<<THEVERYENDOFYOU
 <aside class="ss-sidebar" aria-label="Operative status and gear">
   <section class="ss-side-card ss-player-card">
     <div class="ss-side-card__header"><span class="ss-eyebrow">OPERATIVE</span><h2>{{charname}}</h2></div>
-    <div class="ss-player-card__avatar"><a href="outros.php?do=avatar"><img src="layoutnovo/avatares/{{avatar}}.jpg" alt="Choose avatar" title="Choose Avatar"></a>$olhosenjutsu</div>
+    <div class="ss-player-card__avatar"><a href="other-systems.php?do=avatar"><img src="layoutnovo/avatares/{{avatar}}.jpg" alt="Choose avatar" title="Choose Avatar"></a>$olhosenjutsu</div>
     $barrahtml
     <div class="ss-statbars" title="Operative status">{{statbars}}</div>
     <nav class="ss-side-nav">
       <a href="javascript:mostrarchar('{{charname}}')">Operative Record</a>
-      <a href="outroseatributos.php?do=atributos">Attributes</a>
-      <a href="treinamentoequests.php?do=quests">Contracts</a>
-      <a href="treinamentoequests.php?do=treinamento">Discipline</a>
+      <a href="other-attributes.php?do=atributos">Attributes</a>
+      <a href="training-and-contracts.php?do=quests">Contracts</a>
+      <a href="training-and-contracts.php?do=treinamento">Discipline</a>
     </nav>
   </section>
 
   <section class="ss-side-card">
     <div class="ss-side-card__header"><span class="ss-eyebrow">LOADOUT</span><h2>Gear</h2></div>
     <div class="ss-equipment-grid">
-      <div class="ss-equipment-slot ss-equipment-slot--shield"><a href="desequipar.php?qual=3"><img src="layoutnovo/equipamentos/{{shieldid}}.gif" alt="{{shieldname}}" onmouseover="$shieldatr" onmouseout="fecharexplic();" id="shieldatr"></a></div>
-      <div class="ss-equipment-slot ss-equipment-slot--weapon"><a href="desequipar.php?qual=1"><img src="layoutnovo/equipamentos/{{weaponid}}.gif" alt="{{weaponname}}" onmouseover="$armaatr" onmouseout="fecharexplic();" id="armaatr"></a></div>
+      <div class="ss-equipment-slot ss-equipment-slot--shield"><a href="unequip.php?qual=3"><img src="layoutnovo/equipamentos/{{shieldid}}.gif" alt="{{shieldname}}" onmouseover="$shieldatr" onmouseout="fecharexplic();" id="shieldatr"></a></div>
+      <div class="ss-equipment-slot ss-equipment-slot--weapon"><a href="unequip.php?qual=1"><img src="layoutnovo/equipamentos/{{weaponid}}.gif" alt="{{weaponname}}" onmouseover="$armaatr" onmouseout="fecharexplic();" id="armaatr"></a></div>
       <div class="ss-equipment-slot ss-equipment-slot--secondary">$segundaarmaimagem</div>
-      <div class="ss-equipment-slot ss-equipment-slot--armor"><a href="desequipar.php?qual=2"><img src="layoutnovo/equipamentos/{{armorid}}.gif" alt="{{armorname}}" onmouseover="$armoratr" onmouseout="fecharexplic();" id="armoratr"></a></div>
+      <div class="ss-equipment-slot ss-equipment-slot--armor"><a href="unequip.php?qual=2"><img src="layoutnovo/equipamentos/{{armorid}}.gif" alt="{{armorname}}" onmouseover="$armoratr" onmouseout="fecharexplic();" id="armoratr"></a></div>
     </div>
     <div class="ss-slot-row">
-      <a href="desequipar.php?qual=4"><img src="layoutnovo/equipamentos/drops/{{slot1id}}.gif" alt="{{slot1name}}" onmouseover="$slot1atr" onmouseout="fecharexplic();" id="slot1atr"></a>
-      <a href="desequipar.php?qual=5"><img src="layoutnovo/equipamentos/drops/{{slot2id}}.gif" alt="{{slot2name}}" onmouseover="$slot2atr" onmouseout="fecharexplic();" id="slot2atr"></a>
-      <a href="desequipar.php?qual=6"><img src="layoutnovo/equipamentos/drops/{{slot3id}}.gif" alt="{{slot3name}}" onmouseover="$slot3atr" onmouseout="fecharexplic();" id="slot3atr"></a>
+      <a href="unequip.php?qual=4"><img src="layoutnovo/equipamentos/drops/{{slot1id}}.gif" alt="{{slot1name}}" onmouseover="$slot1atr" onmouseout="fecharexplic();" id="slot1atr"></a>
+      <a href="unequip.php?qual=5"><img src="layoutnovo/equipamentos/drops/{{slot2id}}.gif" alt="{{slot2name}}" onmouseover="$slot2atr" onmouseout="fecharexplic();" id="slot2atr"></a>
+      <a href="unequip.php?qual=6"><img src="layoutnovo/equipamentos/drops/{{slot3id}}.gif" alt="{{slot3name}}" onmouseover="$slot3atr" onmouseout="fecharexplic();" id="slot3atr"></a>
     </div>
     <div class="ss-item-list">
       <div><img src="images/icon_weapon.gif" alt="Weapon"><span>Weapon</span><b>{{weaponname}}</b><small>Durability: $durabm[1]</small></div>
