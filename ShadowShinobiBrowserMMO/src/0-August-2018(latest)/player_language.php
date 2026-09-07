@@ -3,9 +3,8 @@
  * Global player-language output boundary.
  *
  * This file runs before legacy entry points. It preserves the existing PHP 8
- * compatibility prepend, then catches old HTML-entity encoded Portuguese and
- * removes the remaining legacy presentation markers before the canonical
- * Shadow terminology pass.
+ * compatibility prepend, catches old HTML-entity encoded Portuguese, and
+ * removes remaining legacy presentation markers before the Shadow pass.
  */
 require_once __DIR__ . '/legacy_compat.php';
 require_once __DIR__ . '/i18n.php';
@@ -39,20 +38,23 @@ ob_start(function ($buffer) {
 
     $buffer = strtr($buffer, $entityMap);
 
-    // Legacy renderer metadata and CSS hooks are internal implementation details,
-    // not part of the Shadow Shinobi presentation identity.
+    // Remove legacy franchise-specific presentation hooks and branding from
+    // the player response without renaming internal compatibility code yet.
+    $buffer = preg_replace(
+        '#<img\\b[^>]*\\bsrc=["\\\'](?:[^"\\\']*/)?images/naruto\\.jpg["\\\'][^>]*>#i',
+        '',
+        $buffer
+    );
     $buffer = str_replace(
         array(
             'xml:lang="pt" lang="pt"',
             'xml:lang="pt-br" lang="pt-br"',
-            'id="naruto"',
-            'images/naruto.jpg'
+            'id="naruto"'
         ),
         array(
             'xml:lang="en" lang="en"',
             'xml:lang="en" lang="en"',
-            'id="shadow-status"',
-            'images/shadow_shinobi_banner.jpg'
+            'id="shadow-status"'
         ),
         $buffer
     );
