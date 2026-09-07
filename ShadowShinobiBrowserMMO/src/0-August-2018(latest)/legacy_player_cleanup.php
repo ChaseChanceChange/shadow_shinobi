@@ -1,0 +1,53 @@
+<?php
+/** Shadow Shinobi player-output cleanup. Presentation-only compatibility map. */
+function legacy_player_cleanup($text) {
+    static $map = array(
+        'Voc�'=>'You','voc�'=>'you','n�o'=>'not','N�o'=>'Not','j�'=>'already','J�'=>'Already','est�'=>'is','Est�'=>'Is',
+        'Gradua��o'=>'Standing','gradua��o'=>'standing','Conclu�do'=>'Complete','conclu�da'=>'Complete','Conclu�da'=>'Complete',
+        'Indispon�vel'=>'Unavailable','indispon�vel'=>'unavailable','N�o Dispon�vel'=>'Not Available','n�o dispon�vel'=>'not available',
+        'Ol�'=>'Hello','ol�'=>'hello','B�nus'=>'Bonus','b�nus'=>'bonus','For�a'=>'Strength','for�a'=>'strength',
+        'Pr�ximo'=>'Next','pr�ximo'=>'next','Pr�xima'=>'Next','pr�xima'=>'next','Hist�rico'=>'History','hist�rico'=>'history',
+        'mensagens'=>'messages','Mensagem'=>'Message','mensagem'=>'message','Pontos de Distribui��o'=>'Attribute Points',
+        'Pontos de Natureza'=>'Nature Points','Pontos de Vida'=>'Health','Pontos de Chakra'=>'Essence',
+        'Esperan�a'=>'Hope','esperan�a'=>'hope','Vit�ria'=>'Victory','vit�ria'=>'victory','Nenhum Item'=>'No Gear','nenhum item'=>'no gear',
+        'Estudante da Academia'=>'Academy Student','Graduar-se'=>'Advance','graduar-se'=>'advance',
+        'Gradua��o Inicial'=>'Starting Standing','Gradua��o 1'=>'Standing 1','Gradua��o 2'=>'Standing 2','Gradua��o 3'=>'Standing 3',
+        'Gradua��o:'=>'Standing:','gradua��o:'=>'standing:',
+        'O jogador '=>'Operative ','o jogador '=>'operative ','O operative '=>'Operative ','o operative '=>'operative ',
+        ' est? te chamando para realizar uma troca.'=>' is inviting you to trade.',' est� te chamando para realizar uma troca.'=>' is inviting you to trade.',
+        'est? te chamando para realizar uma troca'=>'is inviting you to trade','est� te chamando para realizar uma troca'=>'is inviting you to trade',
+        'Você está exploring o world map, nada aconteceu. Continue explorando usando os botões de direção ou o menu Viajar.'=>'You are exploring the world map; nothing happened. Continue exploring with the movement controls or the Travel menu.',
+        'Voc&ecirc; est&aacute; exploring o world map, nada aconteceu. Continue explorando usando os bot&otilde;es de dire&ccedil;&atilde;o ou o menu Viajar.'=>'You are exploring the world map; nothing happened. Continue exploring with the movement controls or the Travel menu.',
+        'Voc&ecirc; est&aacute; exploring o world map.'=>'You are exploring the world map.','Você está exploring o world map.'=>'You are exploring the world map.',
+        'Realizar uma Troca'=>'Open Trade','Realizar um Duelo'=>'Start Challenge','Abrir Chat Global'=>'Open Open Channel',
+        'Abrir o F&oacute;rum In-Game'=>'Open In-Game Forum','Abrir o Fórum In-Game'=>'Open In-Game Forum','Abrir Chat'=>'Open Chat',
+        'Escolha o Item(Mochila)'=>'Choose Gear (Pack)','Nome do Jogador'=>'Operative Name','Ryou para Trocar'=>'Coin to Trade',
+        'Meu Ryou'=>'My Coin','Realizar Nova Troca'=>'Open New Trade','Aceitar Troca'=>'Accept Trade',
+        'Aguardando o outro jogador'=>'Waiting for the other operative','pressione o bot?o Realizar Nova Troca'=>'press Open New Trade',
+        'pressione o botão Realizar Nova Troca'=>'press Open New Trade','Viajar'=>'Travel','botões de direção'=>'movement controls',
+        'bot?es de dire??o'=>'movement controls','botões de direcção'=>'movement controls','direção'=>'direction','direc??o'=>'direction',
+        'nada aconteceu'=>'nothing happened','Continue explorando'=>'Continue exploring','continuar explorando'=>'continue exploring',
+        'usando'=>'using','menu Viajar'=>'Travel menu',
+        'a pr�xima gradua��o dispon�vel para voc� � a gradua��o de'=>'the next available Standing for you is',
+        'caso voc� possua os requirements, voc� pode se graduar abaixo agora mesmo.'=>'once you meet the requirements, you can advance below now.',
+        'As gradua��es te dar�o b�nus para que voc� se torne um shinobi ainda mais completo.'=>'Standing advancements grant bonuses that make your operative more capable.',
+        'Ser um Estudante da Academia'=>'Be an Academy Student','completar 7 miss%EF%BF%BDes operatives'=>'complete 7 contracts',
+        'completar 10 miss%EF%BF%BDes operatives'=>'complete 10 contracts','completar 20 miss%EF%BF%BDes operatives'=>'complete 20 contracts',
+        'Ser um Initiate'=>'Hold Initiate Standing','obter o gear'=>'obtain the gear','30 de Destreza'=>'30 Dexterity','20 de Destreza'=>'20 Dexterity',
+        '5% de B%EF%BF%BDnus de Experi%EF%BF%BDncia'=>'5% Insight Bonus','5% de B%EF%BF%BDnus de Coin'=>'5% Coin Bonus',
+        'Jogador'=>'Operative','jogador'=>'operative','Jogadores'=>'Operatives','jogadores'=>'operatives','Personagem'=>'Operative Record','personagem'=>'operative record',
+        'Miss�o'=>'Contract','miss�o'=>'contract','miss�es'=>'contracts','Treinamento'=>'Discipline','treinamento'=>'discipline',
+        'N�vel'=>'Standing','n�vel'=>'standing','Experi�ncia'=>'Insight','experi�ncia'=>'insight','Recompensa'=>'Reward','recompensa'=>'reward',
+        'Requerimento'=>'Requirement','requerimento'=>'requirement','Conclus�o'=>'Completion','conclus�o'=>'completion','Informa��o'=>'Details','informa��o'=>'details',
+        'Senha'=>'Password','senha'=>'password','Comprar'=>'Buy','comprar'=>'buy','Vender'=>'Sell','vender'=>'sell','Voltar'=>'Back','voltar'=>'back',
+        'Sair'=>'Logout','sair'=>'logout','Mapa'=>'World Map','mapa'=>'world map','Chakra'=>'Essence','chakra'=>'essence','Jutsu'=>'Art','jutsu'=>'art',
+        'Jutsus'=>'Arts','jutsus'=>'arts','Ninja'=>'Operative','ninja'=>'operative','Duelo'=>'Challenge','duelo'=>'challenge','Troca'=>'Trade','troca'=>'trade',
+        'Banco'=>'Vault','banco'=>'vault','Mochila'=>'Pack','mochila'=>'pack','Ryou'=>'Coin','ryou'=>'coin',
+        'Voc� deve selecionar um Jutsu primeiro.'=>'Select an Art first.','Voc� morreu.'=>'You were defeated.','Parab�ns.'=>'Congratulations.',
+        'Voc� passou de n�vel!'=>'Your Standing increased!','Voc� ganhou:'=>'You gained:','de ataque.'=>' Attack.','de defesa.'=>' Defense.',
+        'Sua mochila j� est� cheia.'=>'Your Pack is already full.','O item foi equipado ou adicionado � mochila com sucesso.'=>'The gear was equipped or added to your Pack successfully.',
+        'Voc� ainda n�o adquiriu nenhum treinamento.'=>'You have not acquired any Discipline yet.'
+    );
+    return strtr($text, $map);
+}
+?>
