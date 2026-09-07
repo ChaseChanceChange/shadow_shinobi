@@ -35,6 +35,8 @@ ob_start(function ($buffer) {
         'N&iacute;veis' => 'Standing',
         'Informa&ccedil;&otilde;es' => 'Details',
         'Informa&ccedil;&atilde;o' => 'Details',
+        'Voc&ecirc; est&aacute; exploring o world map, nada aconteceu. Continue exploring usando os bot&otilde;es de dire&ccedil;&atilde;o ou o menu Viajar.' => 'You are exploring the world map, nothing happened. Continue exploring with the movement controls or the Travel menu.',
+        'Voc&ecirc; est&aacute; exploring o world map.' => 'You are exploring the world map.',
     );
 
     $buffer = strtr($buffer, $entityMap);
@@ -42,6 +44,7 @@ ob_start(function ($buffer) {
 
     // Normalize additional legacy messages while keeping gameplay internals intact.
     $legacyMessages = array(
+        '/O\\s+(?:jogador|operative)\\s+([^<]+?)\\s+est[\\xC3\\xA1?]\\s+te\\s+chamando\\s+para\\s+realizar\\s+uma\\s+troca/i' => 'Operative $1 is inviting you to trade',
         '/Voc[\\xC3\\xA9?]\\s+nao\\s+pode\\s+fazer\\s+nenhum\\s+movimento\\s+enquanto\\s+estiver\\s+em\\s+um\\s+duelo/i' => 'You cannot move while a Challenge is active',
         '/Voce\\s+nao\\s+pode\\s+fazer\\s+nenhum\\s+movimento\\s+enquanto\\s+estiver\\s+em\\s+um\\s+duelo/i' => 'You cannot move while a Challenge is active',
         '/Voce\\s+so\\s+pode\\s+acessar\\s+essa\\s+funcao\\s+dentro\\s+de\\s+uma\\s+cidade/i' => 'This service is only available inside a Settlement',
@@ -104,6 +107,11 @@ ob_start(function ($buffer) {
     $buffer = preg_replace(
         '#<img[^>]+naruto[.]jpg[^>]*>#i',
         '',
+        $buffer
+    );
+    $buffer = preg_replace(
+        '/url\\((?:["\\\']?)images\\/naruto[.]jpg(?:["\\\']?)\\)/i',
+        'url(images/shadow_shinobi_banner.jpg)',
         $buffer
     );
     $buffer = str_replace(
