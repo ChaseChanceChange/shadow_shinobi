@@ -8,6 +8,9 @@ if (isset($_COOKIE['dkgame']) && is_string($_COOKIE['dkgame'])) {
     $GLOBALS['_SS_RAW_DKGAME'] = $_COOKIE['dkgame'];
 }
 
+// Legacy pages still depend on the original NPC/guide card helper.
+require_once __DIR__ . '/personagemgeral.php';
+
 $legacyGetDefaults = [
     'do2',
     'conteudo',
