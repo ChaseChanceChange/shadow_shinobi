@@ -48,7 +48,7 @@ $pontoatributos = $userrow["pontoatributos"];
 		
 		
 		if ($userrow["batalha_timer2"] == 5) {global $topvar;
-$topvar = true; display("You cannot take any action while in a duel. Click <a href=\"users.php?do=resetarduelo\">here</a> to reset your current duel.","Error",false,false,false);die(); }
+$topvar = true; display("You cannot take any action while in a Challenge. Click <a href=\"users.php?do=resetarduelo\">here</a> to reset your current Challenge.","Error",false,false,false);die(); }
 
 					if ($userrow["currentaction"] == "Fighting") {header('Location: ./index.php?do=fight&conteudo=You cannot access this function in the middle of a battle!');die(); }
 				
@@ -79,8 +79,6 @@ $topvar = true; display("You cannot take any action while in a duel. Click <a hr
 		
         $pontostotal = $agilidadep + $sortep + $determinacaop + $precisaop + $inteligenciap;
 
-		/*if ($userrow["password"] != md5($oldpass)) { die("The old password you provided was incorrect."); }
-        /*$realnewpass = md5($newpass1); */
 		if ($pontoatributos == 0) { header('Location: ./outroseatributos.php?do=atributos&conteudo=You have no points available to distribute.');die();}
 		if ($pontostotal > $pontoatributos) { header('Location: ./outroseatributos.php?do=atributos&conteudo=You cannot distribute more than '.$pontoatributos.' points.');die();}
 
@@ -106,7 +104,10 @@ $agilidade += $agilidadep;
        header('Location: ./outroseatributos.php?do=atributos&conteudo=Your points have been distributed successfully.');die();
     }
 	
-	$conteudo = $_GET['conteudo'];
+	$conteudo = $_GET['conteudo'] ?? '';
+	if ($pontoatributos == 0 && $conteudo == '') {
+		$conteudo = 'You have no points available to distribute.';
+	}
 	if ($conteudo != ""){$conteudo = "<center><font color=\"brown\">".strip_tags($conteudo)."</font></center><br>";}
     $page = "<table width=\"100%\"><tr><td width=\"100%\" align=\"center\"><center><img src=\"images/distribuir.gif\" /></center></td></tr></table>
 	$conteudo
