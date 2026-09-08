@@ -75,6 +75,10 @@ if (!isset($valorlib)) {
     $valorlib = '';
 }
 
+if (!isset($var)) {
+    $var = '';
+}
+
 if (!isset($indexconteudo)) {
     $indexconteudo = '';
 }
