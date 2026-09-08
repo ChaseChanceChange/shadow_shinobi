@@ -71,6 +71,10 @@ ini_set('display_startup_errors', '0');
 ini_set('log_errors', '1');
 
 // Common legacy template / include variables that are often written only on some branches.
+if (!isset($valorlib)) {
+    $valorlib = '';
+}
+
 if (!isset($indexconteudo)) {
     $indexconteudo = '';
 }
